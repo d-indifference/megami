@@ -5,9 +5,18 @@ export class AppController {
 	@Get()
 	@Render('index')
 	getIndexPage() {
-		return {
-			title: 'Название вашей страницы',
-			message: 'Привет, мир!'
-		};
+		return {};
+	}
+
+	@Get('boards')
+	@Render('boards')
+	getBoardsPage() {
+		return {};
+	}
+
+	@Get('faq')
+	@Render('info-page')
+	getFAQ() {
+		return {};
 	}
 }

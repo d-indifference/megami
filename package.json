@@ -6,8 +6,8 @@
 	"private": true,
 	"license": "MIT",
 	"scripts": {
-		"css-once": "node_modules/node-sass/bin/node-sass public/scss/style.scss public/css/style.css",
-		"css-watch": "npm run css-once && node_modules/node-sass/bin/node-sass public/scss/style.scss public/css/style.css --watch",
+		"css-once": "node_modules/node-sass/bin/node-sass public/scss/bootstrap.scss public/css/style.css",
+		"css-watch": "npm run css-once && node_modules/node-sass/bin/node-sass public/scss/bootstrap.scss public/css/style.css --watch",
 		"build": "nest build",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
 		"start": "npm run css-watch && nest start",
