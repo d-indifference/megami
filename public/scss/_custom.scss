@@ -1,0 +1,27 @@
+.custom-masonry {
+	columns: 4;
+	column-gap: 20px;
+
+	&__card {
+		break-inside: avoid;
+		display: block;
+	}
+}
+
+@media (max-width: 992px) {
+	.custom-masonry {
+		columns: 3;
+	}
+}
+
+@media (max-width: 768px) {
+	.custom-masonry {
+		columns: 2;
+	}
+}
+
+@media (max-width: 576px) {
+	.custom-masonry {
+		columns: 1;
+	}
+}

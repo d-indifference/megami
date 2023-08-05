@@ -1,18 +1,44 @@
-<!doctype html>
-<html lang='en'>
-<head>
-	<meta charset='UTF-8'>
-	<meta name='viewport'
-		  content='width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0'>
-	<meta http-equiv='X-UA-Compatible' content='ie=edge'>
-	<link rel='stylesheet' href='/css/style.css'>
-	<title>Document</title>
-</head>
-<body>
-	<p>Hello world!!!</p>
+{{> head}}
 
-	<p>{{ title }}</p>
+{{> navbar }}
 
-	<p>{{ message }}</p>
-</body>
-</html>
+<div class='container'>
+	<hr>
+	<div class='text-center'>
+		<h1>Megami Image Board</h1>
+		<em>Modern image board engine</em>
+
+		<div class="list-group list-group-horizontal mt-4">
+			<a href="/boards" class="list-group-item list-group-item-action">Boards</a>
+			<a href="/faq" class="list-group-item list-group-item-action">FAQ</a>
+			<a href="#" class="list-group-item list-group-item-action">Rules</a>
+		</div>
+	</div>
+	<hr>
+
+	<div class='row'>
+		<div class='col-md-3'>
+			<img src="https://410chan.org/410.png" class="img-thumbnail" alt="Logo" style='width: 300px'>
+		</div>
+		<div class='col-md-9'>
+			<p>
+				Добро пожаловать на 410chan! Наш сайт является имиджбордом — одним из специфических сетевых форумов,
+				где нет принудительной регистрации, а к сообщениям можно легко прикреплять графические файлы.
+				В центре внимания сайта находится тематика аниме, манги и смежных проявлений японской массовой культуры,
+				но также имеются разделы, посвящённые другим вопросам.
+				Кроме того, вещи, для которых не выделено отдельного тематического раздела, можно обсудить на доске <a
+				href='#'>/b/</a>.
+			</p>
+			<p>
+				Поскольку сайт построен по принципу наполнения самими пользователями, то, как он будет выглядеть,
+				всецело зависит от них. Наше сообщество стремится к достижению высокой культуры общения.
+				Мы надеемся на то, что пассажиры нашего Автобуса будут вежливыми и интересными собеседниками
+				и предпочтут содержательное общение бессмысленным разборкам.
+			</p>
+		</div>
+	</div>
+	<hr>
+
+</div>
+
+{{> eof}}
