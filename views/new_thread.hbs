@@ -1,0 +1,40 @@
+{{> head}}
+
+{{> back_to_board_navbar }}
+
+<div class='container'>
+	<h1 class='mt-3 mb-5'>New Thread in /b/</h1>
+
+	<form action=''>
+		<div class="mb-3">
+			<label for="newThreadName" class="form-label">Name</label>
+			<input type="text" class="form-control" id="newThreadName">
+		</div>
+		<div class="mb-3">
+			<label for="newThreadSubject" class="form-label">Subject</label>
+			<input type="text" class="form-control" id="newThreadSubject">
+		</div>
+		<div class="mb-3">
+			<label for="newThreadComment" class="form-label">Comment</label>
+			<textarea class="form-control" id="newThreadComment" rows="3"></textarea>
+		</div>
+		<div class="mb-3">
+			<label for="newThreadFile" class="form-label">File</label>
+			<input class="form-control" type="file" id="newThreadFile">
+		</div>
+		<div class="mb-3 col-3">
+			<label for="newThreadPassword" class="form-label">Password</label>
+			<input type="password" class="form-control" id="newThreadPassword">
+		</div>
+		<div class="form-check">
+			<input class="form-check-input" type="checkbox" value="" id="newThreadNoko" checked>
+			<label class="form-check-label" for="newThreadNoko">Noko (stay in thread)</label>
+		</div>
+		<div class='mt-3'>
+			<button type="submit" class="btn btn-primary mb-3">Submit</button>
+		</div>
+	</form>
+
+</div>
+
+{{> eof}}
