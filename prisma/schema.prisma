@@ -6,3 +6,30 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// Board
+model Board {
+  id                String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt         DateTime @default(now())
+  slug              String   @unique @db.VarChar(32)
+  name              String   @db.VarChar(64)
+  lastCommentNumber BigInt   @default(0)
+}
+
+// Comment
+model Comment {
+  id            String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt     DateTime  @default(now())
+  boardSlug     String    @db.VarChar(32)
+  numberOnBoard BigInt
+  email         String?   @db.VarChar(256)
+  name          String?   @db.VarChar(256)
+  subject       String?   @db.VarChar(256)
+  comment       String    @db.Text
+  file          String?   @db.VarChar(512)
+  password      String    @db.VarChar(8)
+  parentId      String?   @db.Uuid
+  parent        Comment?  @relation("RepliesForThread", fields: [parentId], references: [id])
+  children      Comment[] @relation("RepliesForThread")
+  lastHit       DateTime?
+}

@@ -36,5 +36,7 @@ lerna-debug.log*
 
 /volumes
 /public/css
+/public/files
+/prisma/migrations
 
 .env
