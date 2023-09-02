@@ -4,6 +4,7 @@ import * as fs from 'fs/promises';
 import { ConfigService } from '@nestjs/config';
 import * as path from 'path';
 import * as process from 'process';
+import { move } from 'fs-extra';
 
 /**
  * Create the directory, if not exists
@@ -44,7 +45,7 @@ export const saveFileToPermanentStorage = async (
 
 	await mkDirIfNotExists(pathToBoardDirectory);
 
-	await fs.rename(file.path, path.join(pathToBoardDirectory, filename));
+	await move(file.path, path.join(pathToBoardDirectory, filename));
 
 	return `/${slug}/${filename}`;
 };

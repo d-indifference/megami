@@ -49,4 +49,24 @@ const passwordSettingHandler = () => {
 	}
 };
 
+const normalizeDateTimeInThread = () => {
+	const DateTime = luxon.DateTime;
+
+	const postingTimes = document.querySelectorAll('.posting-time');
+
+	for (const postingTime of postingTimes) {
+		const isoDate = new Date(postingTime.innerHTML).toISOString()
+		const luxonDate = DateTime
+			.fromISO(isoDate)
+			.setZone(
+				Intl
+					.DateTimeFormat()
+					.resolvedOptions()
+					.timeZone
+			);
+		postingTime.innerHTML = luxonDate.toFormat('dd.MM.yyyy (EEE) HH:mm:ss');
+	}
+};
+
 passwordSettingHandler();
+normalizeDateTimeInThread();

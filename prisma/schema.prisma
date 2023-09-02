@@ -9,7 +9,7 @@ datasource db {
 
 // Board
 model Board {
-  id                String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt         DateTime @default(now())
   slug              String   @unique @db.VarChar(32)
   name              String   @db.VarChar(64)
@@ -18,7 +18,7 @@ model Board {
 
 // Comment
 model Comment {
-  id            String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt     DateTime  @default(now())
   boardSlug     String    @db.VarChar(32)
   numberOnBoard BigInt
