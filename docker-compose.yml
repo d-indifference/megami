@@ -28,6 +28,25 @@ services:
     networks:
       - megami-network
 
+  megami:
+    build:
+      dockerfile: './Dockerfile'
+      context: '.'
+    container_name: megami-backend
+    image: megami-backend
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    ports:
+      - '${MEGAMI_EXTTERNAL_PORT}:${MEGAMI_INTERNAL_PORT}'
+    expose:
+      - '${MEGAMI_EXTTERNAL_PORT}'
+    volumes:
+      - ./${MEGAMI_ASSETS_PUBLIC_DIR}/${MEGAMI_FILES_DIR}:/app/${MEGAMI_ASSETS_PUBLIC_DIR}/${MEGAMI_FILES_DIR}
+    networks:
+      - megami-network
+
 networks:
   megami-network:
     driver: bridge

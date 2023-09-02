@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { BoardModule } from './board/board.module';
 import { ConfigModule } from '@nestjs/config';
 import { ThreadModule } from './thread/thread.module';
+import { MigratorModule } from './migrator/migrator.module';
 
 /**
  * Main app module
@@ -13,7 +14,8 @@ import { ThreadModule } from './thread/thread.module';
 			envFilePath: '.env'
 		}),
 		BoardModule,
-		ThreadModule
+		ThreadModule,
+		MigratorModule
 	],
 	controllers: [AppController],
 	providers: []

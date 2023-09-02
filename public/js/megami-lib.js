@@ -14,13 +14,13 @@ const makeCopiedPopover = (thiz, message) => {
 	}, 1000);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const copyPermalink = (thiz, postNumber) => {
 	navigator.clipboard.writeText(buildPostPermalink(postNumber)).then(
 		() => {
 			makeCopiedPopover(thiz, 'Copied!');
 		},
 		err => {
+			console.error(err);
 			makeCopiedPopover(thiz, 'There is some problem... :(');
 		}
 	);

@@ -1,0 +1,8 @@
+/dist
+/node_modules
+/volumes
+/.git
+/.idea
+/public/files
+.env
+.env.sample
