@@ -130,26 +130,6 @@ You can read more about Postgres and PgAdmin environment variables here:
 * https://hub.docker.com/_/postgres - PostgreSQL.
 * https://registry.hub.docker.com/r/dpage/pgadmin4 - PgAdmin 4.
 
-## Screenshots
-
-Index page:
-![Index page](https://raw.githubusercontent.com/d-indifference/megami/master/readme/screen1.png?token=GHSAT0AAAAAACF6HJYX5JX5CCJP25DFWVMOZHUKMHA)
-
-Boards page:
-![Boards page](https://raw.githubusercontent.com/d-indifference/megami/master/readme/screen2.png?token=GHSAT0AAAAAACF6HJYX5JX5CCJP25DFWVMOZHUKMHA)
-
-Threads page:
-![Threads page](https://raw.githubusercontent.com/d-indifference/megami/master/readme/screen3.png?token=GHSAT0AAAAAACF6HJYX5JX5CCJP25DFWVMOZHUKMHA)
-
-Thread replies page:
-![Thread replies page](https://raw.githubusercontent.com/d-indifference/megami/master/readme/screen4.png?token=GHSAT0AAAAAACF6HJYX5JX5CCJP25DFWVMOZHUKMHA)
-
-Reply in thread form:
-![Reply in thread form](https://raw.githubusercontent.com/d-indifference/megami/master/readme/screen5.png?token=GHSAT0AAAAAACF6HJYX5JX5CCJP25DFWVMOZHUKMHA)
-
-New Thread form:
-![New Thread form](https://raw.githubusercontent.com/d-indifference/megami/master/readme/screen6.png?token=GHSAT0AAAAAACF6HJYX5JX5CCJP25DFWVMOZHUKMHA)
-
 ## License
 <a href="https://github.com/d-indifference/megami/blob/master/LICENSE">GPLV2 License</a>
 
