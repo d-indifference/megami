@@ -62,6 +62,10 @@ export class ThreadQueriesImpl implements ThreadQueries {
 			throw new NotFoundException();
 		}
 
+		if (openingPost.parentId !== null) {
+			throw new NotFoundException();
+		}
+
 		return this.threadMapper.toOpenPostDto(openingPost);
 	}
 
