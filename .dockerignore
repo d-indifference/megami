@@ -6,3 +6,6 @@
 /public/files
 .env
 .env.sample
+README.MD
+LICENSE
+/readme
