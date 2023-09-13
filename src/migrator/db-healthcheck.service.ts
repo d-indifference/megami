@@ -1,6 +1,7 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Prisma } from '@prisma/client';
+import { LOG } from '../toolkit';
 
 /**
  * Database healthcheck service
@@ -21,7 +22,7 @@ export class DbHealthCheckService {
 
 			return Boolean(result);
 		} catch (e) {
-			Logger.error(e.message.trim(), this.constructor.name);
+			LOG.error(this, e.message.trim());
 
 			return false;
 		}

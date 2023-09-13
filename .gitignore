@@ -35,7 +35,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 /volumes
-/public/css
+/public/css/megami.css
 /public/files
 
 .env

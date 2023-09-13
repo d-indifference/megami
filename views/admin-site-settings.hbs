@@ -1,0 +1,127 @@
+{{> head}}
+
+{{> admin_nav }}
+
+<div class='container-fluid mt-3'>
+
+	{{> admin_offcanvas }}
+
+	<div class='row mt-3 mt-lg-0'>
+		<div class='col-lg-3 d-lg-block d-none'>
+			{{> admin_menu}}
+		</div>
+		<div class='col'>
+
+			<h2 class='mb-3'>Site settings</h2>
+
+			<form action='/megami/settings' method='post'>
+				<h4>Common settings</h4>
+
+				<div class='mb-3'>
+					<label for="settingsSiteName" class="form-label">Site name</label>
+					<input
+						type="text"
+						name="title"
+						class="form-control"
+						id="settingsSiteName"
+						required
+						autocomplete='off'
+						value='{{ siteSettings.title }}'
+					>
+				</div>
+
+				<div class='mb-3'>
+					<label for="settingsSiteSlogan" class="form-label">Site slogan</label>
+					<input
+						type="text"
+						name="slogan"
+						class="form-control"
+						id="settingsSiteSlogan"
+						required
+						autocomplete='off'
+						value='{{ siteSettings.slogan }}'
+					>
+				</div>
+
+				<div class='mb-3'>
+					<label for="settingsSiteMainImage" class="form-label">Link to Main page logo</label>
+					<input
+						type="text"
+						name="mainPageLogoAddress"
+						class="form-control"
+						id="settingsSiteMainImage"
+						required
+						autocomplete='off'
+						value='{{ siteSettings.mainPageLogoAddress }}'
+					>
+				</div>
+
+				<div class='mb-3'>
+					<label for="settingsSiteDescription" class="form-label">Site description</label>
+					<textarea
+						name="description"
+						cols='30'
+						rows='10'
+						class="form-control"
+						id="settingsSiteDescription"
+						required
+						autocomplete='off'
+					>{{ siteSettings.description }}</textarea>
+				</div>
+
+				<hr>
+
+				<h4>Posting limits</h4>
+
+				<div class='mb-3'>
+					<label for="settingsThreadCreationDelay" class="form-label">Thread creation delay</label>
+					<input
+						type="number"
+						name="threadCreationDelay"
+						class="form-control"
+						id="settingsThreadCreationDelay"
+						required
+						autocomplete='off'
+						value='{{ siteSettings.threadCreationDelay }}'
+						min='0'
+					>
+				</div>
+
+				<div class='mb-3'>
+					<label for="settingsThreadReplyDelay" class="form-label">Thread reply delay</label>
+					<input
+						type="number"
+						name="threadReplyDelay"
+						class="form-control"
+						id="settingsThreadReplyDelay"
+						required
+						autocomplete='off'
+						value='{{ siteSettings.threadReplyDelay }}'
+						min='0'
+					>
+				</div>
+
+				<div class='mb-3'>
+					<label for="settingsBumpLimit" class="form-label">Bump Limit</label>
+					<input
+						type="number"
+						name="bumpLimit"
+						class="form-control"
+						id="settingsBumpLimit"
+						required
+						autocomplete='off'
+						value='{{ siteSettings.bumpLimit }}'
+						min='3'
+					>
+				</div>
+
+				<button class='btn btn-primary'>Save changes</button>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+<script src='/js/megami-dashboard.js'></script>
+
+{{> eof}}

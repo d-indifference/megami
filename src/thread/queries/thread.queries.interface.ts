@@ -2,6 +2,7 @@ import { ThreadItemDto } from '../dto/thread.item.dto';
 import { Page } from '../../toolkit/pagination/page.type';
 import { ThreadOpenPostDto } from '../dto/thread-open-post.dto';
 import { ThreadReplyDto } from '../dto/thread-reply.dto';
+import { Comment } from '@prisma/client';
 
 /**
  * Queries for thread entities
@@ -25,6 +26,10 @@ export interface ThreadQueries {
 	findReplies(slug: string, numberOnBoard: number): Promise<ThreadReplyDto[]>;
 
 	getFilesCount(slug: string, numberOnBoard: number): Promise<number>;
+
+	findLastCommentByIp(ip: string): Promise<Comment>;
+
+	count(): Promise<number>;
 }
 
 export const ThreadQueries = Symbol('ThreadQueries');

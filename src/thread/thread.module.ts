@@ -17,6 +17,7 @@ import { ThreadQueriesImpl } from './queries/impl/thread.queries.impl';
 import { ThreadController } from './thread.controller';
 import { ThreadRepliesView } from './views/thread-replies.view.interface';
 import { ThreadRepliesViewImpl } from './views/impl/thread-replies.view.impl';
+import { SiteSettingsModule } from '../site-settings/site-settings.module';
 
 /**
  * Module for threads and replies
@@ -29,7 +30,8 @@ import { ThreadRepliesViewImpl } from './views/impl/thread-replies.view.impl';
 			imports: [ConfigModule],
 			inject: [ConfigService],
 			useFactory: nestjsFormDataConfig
-		})
+		}),
+		SiteSettingsModule
 	],
 	providers: [
 		PrismaService,
@@ -63,6 +65,14 @@ import { ThreadRepliesViewImpl } from './views/impl/thread-replies.view.impl';
 		{
 			provide: ThreadQueries,
 			useClass: ThreadQueriesImpl
+		},
+		{
+			provide: ThreadRepo,
+			useClass: ThreadRepoImpl
+		},
+		{
+			provide: ThreadCommands,
+			useClass: ThreadCommandsImpl
 		}
 	]
 })

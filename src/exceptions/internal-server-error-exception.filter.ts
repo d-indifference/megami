@@ -4,6 +4,7 @@ import {
 	ExceptionFilter,
 	InternalServerErrorException
 } from '@nestjs/common';
+import { LOG } from '../toolkit';
 
 /**
  * 500 Error Filter
@@ -16,6 +17,8 @@ export class InternalServerErrorExceptionFilter implements ExceptionFilter {
 	): void {
 		const ctx = host.switchToHttp();
 		const response = ctx.getResponse();
+
+		LOG.error(this, '[500] Internal server error');
 
 		response.render('500', {
 			title: '500 Internal Server Error',

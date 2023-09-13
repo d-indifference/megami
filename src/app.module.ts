@@ -4,6 +4,8 @@ import { BoardModule } from './board/board.module';
 import { ConfigModule } from '@nestjs/config';
 import { ThreadModule } from './thread/thread.module';
 import { MigratorModule } from './migrator/migrator.module';
+import { ManagementModule } from './management/management.module';
+import { SiteSettingsModule } from './site-settings/site-settings.module';
 
 /**
  * Main app module
@@ -13,9 +15,11 @@ import { MigratorModule } from './migrator/migrator.module';
 		ConfigModule.forRoot({
 			envFilePath: '.env'
 		}),
+		ManagementModule,
 		BoardModule,
 		ThreadModule,
-		MigratorModule
+		MigratorModule,
+		SiteSettingsModule
 	],
 	controllers: [AppController],
 	providers: []

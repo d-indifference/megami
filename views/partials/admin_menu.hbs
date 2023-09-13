@@ -1,0 +1,104 @@
+<div class="list-group">
+	<a href='/' class='list-group-item list-group-item-action'>
+		<span class='icon-house'></span>
+		&nbsp;Home
+	</a>
+{{# if (eq session.role "ADMIN") }}
+	<a href='/megami/home' class='list-group-item list-group-item-action'>
+		<span class='icon-gauge-high'></span>
+		&nbsp;Dashboard
+	</a>
+{{/if}}
+</div>
+
+<ul class="list-group mt-2">
+	<li class="list-group-item list-group-item-secondary">
+		<strong>Profile</strong>
+	</li>
+</ul>
+<div class="list-group">
+	<a href='/megami/profile' class='list-group-item list-group-item-action'>
+		<span class='icon-address-card'></span>
+		&nbsp;My profile
+	</a>
+	<a href='/megami/sign-out' class='list-group-item list-group-item-action'>
+		<span class='icon-arrow-right-from-bracket'></span>
+		&nbsp;Sign out
+	</a>
+</div>
+
+<ul class="list-group mt-2">
+	<li class="list-group-item list-group-item-secondary">
+		<strong>Moderation</strong>
+	</li>
+</ul>
+<div class="list-group">
+	<a href='/megami' class='list-group-item list-group-item-action'>
+		<span class='icon-ban'></span>
+		&nbsp;Bans
+	</a>
+{{# if (eq session.role "ADMIN") }}
+	<a href='/megami' class='list-group-item list-group-item-action'>
+		<span class='icon-shield-halved'></span>
+		&nbsp;Filtered IPs
+	</a>
+{{/if}}
+	<a href='/megami' class='list-group-item list-group-item-action'>
+		<span class='icon-comments'></span>
+		&nbsp;Recent posts
+	</a>
+	<a href='/megami' class='list-group-item list-group-item-action'>
+		<span class='icon-paperclip'></span>
+		&nbsp;Recent uploads
+	</a>
+</div>
+
+{{# if (eq session.role "ADMIN") }}
+<ul class="list-group mt-2">
+	<li class="list-group-item list-group-item-secondary">
+		<strong>Site management</strong>
+	</li>
+</ul>
+<div class="list-group">
+	<a href='/megami/disk' class='list-group-item list-group-item-action'>
+		<span class='icon-hard-drive'></span>
+		&nbsp;Disk space used
+	</a>
+	<a href='/megami/settings' class='list-group-item list-group-item-action'>
+		<span class='icon-gear'></span>
+		&nbsp;Site settings
+	</a>
+	<a href='/megami/sql-console' class='list-group-item list-group-item-action'>
+		<span class='icon-terminal'></span>
+		&nbsp;SQL console
+	</a>
+	<a href='http://localhost:5050/' target='_blank' class='list-group-item list-group-item-action' id='pgAdminLink'>
+		<span class='icon-database'></span>
+		&nbsp;PgAdmin 4
+	</a>
+	<a href='https://github.com/d-indifference/megami' target='_blank' class='list-group-item list-group-item-action'>
+		<span class='icon-github'></span>
+		&nbsp;Check for new version
+	</a>
+</div>
+{{/if}}
+
+{{# if (eq session.role "ADMIN") }}
+	<ul class="list-group mt-2">
+		<li class="list-group-item list-group-item-secondary">
+			<strong>Administration</strong>
+		</li>
+	</ul>
+	<div class="list-group">
+		<a href='/megami/staff' class='list-group-item list-group-item-action'>
+			<span class='icon-users'></span>
+			&nbsp;Staff
+		</a>
+		<a href='/megami/boards' class='list-group-item list-group-item-action'>
+			<span class='icon-table'></span>
+			&nbsp;Boards
+		</a>
+	</div>
+{{/if}}
+
+

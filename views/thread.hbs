@@ -70,8 +70,9 @@
 	<a href='/{{ openingPost.boardSlug }}' class='btn btn-outline-primary'>Go back</a>
 
 	<form action='/{{ openingPost.boardSlug }}/res/{{ openingPost.numberOnBoard }}/delete' method='post'>
-		<table class='table table-borderless mt-3 custom-thread-comments-table'>
-			<tr class='custom-thread-comments-table__opening-post'>
+		<table class='table table-striped mt-3'>
+			<thead>
+			<tr>
 				<td class='custom-thread-comment'>
 					<a name='{{ openingPost.numberOnBoard }}'></a>
 					<input
@@ -113,7 +114,7 @@
 						<span class="badge bg-info text-dark">OP</span>
 						<button
 							type="button"
-							class="btn btn-primary btn-sm"
+							class="btn btn-secondary btn-sm"
 							onclick='copyPermalink(this, {{ openingPost.numberOnBoard }})'
 						>
 							Permalink
@@ -130,7 +131,9 @@
 					</div>
 				</td>
 			</tr>
+			</thead>
 
+			<tbody>
 			{{# each replies }}
 				<tr>
 					<td class='custom-thread-comment'>
@@ -174,7 +177,7 @@
 
 							<button
 								type="button"
-								class="btn btn-primary btn-sm"
+								class="btn btn-secondary btn-sm"
 								onclick='copyPermalink(this, {{ this.numberOnBoard }})'
 							>
 								Permalink
@@ -192,6 +195,7 @@
 					</td>
 				</tr>
 			{{/ each }}
+			</tbody>
 		</table>
 
 		<div>
@@ -213,7 +217,7 @@
 			</span>
 			<label for="deletePostPassword" class="form-label">Password</label>
 			<input type="password" name='password' class="form-control custom-delete-comments__pwd" id="deletePostPassword">
-			<button type="submit" class="btn btn-primary mt-2">Delete</button>
+			<button type="submit" class="btn btn-secondary mt-2">Delete</button>
 		</div>
 	</form>
 </div>

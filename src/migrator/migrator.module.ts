@@ -5,6 +5,9 @@ import { ConfigModule } from '@nestjs/config';
 import { MigrationToolkitService } from './migration-toolkit.service';
 import { MigratorService } from './migrator.service';
 
+/**
+ * Prisma migrations runner module
+ */
 @Module({
 	imports: [ConfigModule],
 	providers: [

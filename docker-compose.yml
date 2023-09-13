@@ -29,21 +29,27 @@ services:
       - megami-network
 
   megami:
+    container_name: megami-backend
+    image: megami-backend
+    env_file:
+      - .env
+    depends_on:
+      - postgres
     build:
       dockerfile: './Dockerfile'
       context: '.'
-    container_name: megami-backend
-    image: megami-backend
-    depends_on:
-      - postgres
-    env_file:
-      - .env
+      args:
+        MEGAMI_ASSETS_PUBLIC_DIR: '${MEGAMI_ASSETS_PUBLIC_DIR}'
+        MEGAMI_FILES_DIR: '${MEGAMI_FILES_DIR}'
+        MEGAMI_VOLUMES_DIR: '${MEGAMI_VOLUMES_DIR}'
+        MEGAMI_SETTINGS_VOLUME_NAME: '${MEGAMI_SETTINGS_VOLUME_NAME}'
     ports:
-      - '${MEGAMI_EXTTERNAL_PORT}:${MEGAMI_INTERNAL_PORT}'
+      - '${MEGAMI_EXTERNAL_PORT}:${MEGAMI_INTERNAL_PORT}'
     expose:
-      - '${MEGAMI_EXTTERNAL_PORT}'
+      - '${MEGAMI_EXTERNAL_PORT}'
     volumes:
       - ./${MEGAMI_ASSETS_PUBLIC_DIR}/${MEGAMI_FILES_DIR}:/app/${MEGAMI_ASSETS_PUBLIC_DIR}/${MEGAMI_FILES_DIR}
+      - ${MEGAMI_SETTINGS_VOLUME}:/app/${MEGAMI_VOLUMES_DIR}/${MEGAMI_SETTINGS_VOLUME_NAME}
     networks:
       - megami-network
 

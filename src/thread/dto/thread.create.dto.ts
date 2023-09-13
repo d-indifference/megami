@@ -5,6 +5,11 @@ import { FileSystemStoredFile } from 'nestjs-form-data';
  */
 export class ThreadCreateDto {
 	/**
+	 * Poster's IP
+	 */
+	posterIp: string;
+
+	/**
 	 * Email
 	 */
 	email?: string;

@@ -65,6 +65,7 @@ export class ThreadMapperImpl implements ThreadMapper {
 	 */
 	public create(slug: string, dto: ThreadCreateDto, file: string): Comment {
 		return {
+			posterIp: dto.posterIp,
 			boardSlug: slug,
 			email: dto.email,
 			name: dto.name,

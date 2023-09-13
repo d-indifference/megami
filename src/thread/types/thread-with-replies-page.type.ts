@@ -11,6 +11,11 @@ export type ThreadWithRepliesPage = {
 	title: string;
 
 	/**
+	 * Site logo
+	 */
+	siteLogo: string;
+
+	/**
 	 * Count of files
 	 */
 	filesCount: number;

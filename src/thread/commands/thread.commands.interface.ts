@@ -28,6 +28,8 @@ export interface ThreadCommands {
 		threadNumbers: bigint[],
 		password: string
 	): Promise<void>;
+
+	clearFilesIn(files: string[]): Promise<void>;
 }
 
 export const ThreadCommands = Symbol('ThreadCommands');

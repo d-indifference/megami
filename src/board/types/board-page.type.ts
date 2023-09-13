@@ -12,6 +12,11 @@ export type BoardPage = {
 	title: string;
 
 	/**
+	 * Site logo
+	 */
+	siteLogo: string;
+
+	/**
 	 * Current Board Info
 	 */
 	board: BoardDto;

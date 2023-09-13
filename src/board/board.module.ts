@@ -12,12 +12,15 @@ import { BoardMapper } from './mappers/board.mapper.interface';
 import { ThreadsView } from './views/threads.view.interface';
 import { ThreadsViewImpl } from './views/impl/threads.view.impl';
 import { ThreadModule } from '../thread/thread.module';
+import { BoardCommands } from './commands/board.commands.interface';
+import { BoardCommandsImpl } from './commands/impl/board.commands.impl';
+import { SiteSettingsModule } from '../site-settings/site-settings.module';
 
 /**
  * Module for boards
  */
 @Module({
-	imports: [ConfigModule, forwardRef(() => ThreadModule)],
+	imports: [ConfigModule, forwardRef(() => ThreadModule), SiteSettingsModule],
 	controllers: [],
 	providers: [
 		PrismaService,
@@ -40,6 +43,10 @@ import { ThreadModule } from '../thread/thread.module';
 		{
 			provide: ThreadsView,
 			useClass: ThreadsViewImpl
+		},
+		{
+			provide: BoardCommands,
+			useClass: BoardCommandsImpl
 		}
 	],
 	exports: [
@@ -58,6 +65,10 @@ import { ThreadModule } from '../thread/thread.module';
 		{
 			provide: BoardRepo,
 			useClass: BoardRepoImpl
+		},
+		{
+			provide: BoardCommands,
+			useClass: BoardCommandsImpl
 		}
 	]
 })

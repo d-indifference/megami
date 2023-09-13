@@ -2,12 +2,24 @@ FROM node:19-alpine
 
 WORKDIR /app
 
+ARG MEGAMI_ASSETS_PUBLIC_DIR
+
+ARG MEGAMI_FILES_DIR
+
+ARG MEGAMI_VOLUMES_DIR
+
+ARG MEGAMI_SETTINGS_VOLUME_NAME
+
 COPY . .
 
 RUN npm i
 
 RUN npm run build
 
-RUN mkdir /app/public/files
+RUN mkdir /app/${MEGAMI_ASSETS_PUBLIC_DIR}/${MEGAMI_FILES_DIR}
+
+RUN mkdir /app/${MEGAMI_VOLUMES_DIR}
+
+RUN mkdir /app/${MEGAMI_VOLUMES_DIR}/${MEGAMI_SETTINGS_VOLUME_NAME}
 
 CMD ["npm", "run", "start:prod"]

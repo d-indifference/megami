@@ -84,6 +84,27 @@ export class ThreadRepoImpl implements ThreadRepo {
 	}
 
 	/**
+	 * Find last comment written from IP
+	 * @param ip Poster's IP
+	 */
+	public async findLastCommentByIp(ip: string): Promise<Comment> {
+		const milliseconds24h = 24 * 60 * 60 * 1000;
+		const lastDayStamp = Date.now() - milliseconds24h;
+		const lastDay = new Date(lastDayStamp).toISOString();
+
+		const postsFromIp = await this.prisma.comment.findMany({
+			where: { AND: [{ posterIp: ip }, { createdAt: { gte: lastDay } }] },
+			orderBy: { createdAt: 'desc' }
+		});
+
+		if (postsFromIp.length > 0) {
+			return postsFromIp[0];
+		}
+
+		return null;
+	}
+
+	/**
 	 * Find all threads by board slug
 	 * @param slug Board slug
 	 * @param page Page number
@@ -138,6 +159,13 @@ export class ThreadRepoImpl implements ThreadRepo {
 				NOT: { file: null }
 			}
 		})) as number;
+	}
+
+	/**
+	 * Get total comments count
+	 */
+	public async count(): Promise<number> {
+		return (await this.prisma.comment.count()) as number;
 	}
 
 	/**
@@ -226,6 +254,40 @@ export class ThreadRepoImpl implements ThreadRepo {
 				password,
 				numberOnBoard: { in: numbersOnBoard }
 			}
+		});
+	}
+
+	/**
+	 * Get total count of comments on board
+	 * @param slug Board slug
+	 */
+	public async getTotalCommentsOnBoardCount(slug: string): Promise<number> {
+		return (await this.prisma.comment.count({
+			where: { boardSlug: slug }
+		})) as number;
+	}
+
+	/**
+	 * Get total count of files on board
+	 * @param slug Board slug
+	 */
+	public async getTotalFilesOnBoardCount(slug: string): Promise<number> {
+		return (await this.prisma.comment.count({
+			where: {
+				boardSlug: slug,
+				file: { not: null }
+			}
+		})) as number;
+	}
+
+	/**
+	 * Clear files in comments
+	 * @param files File list which should be cleared
+	 */
+	public async clearFilesIn(files: string[]): Promise<void> {
+		await this.prisma.comment.updateMany({
+			where: { file: { in: files } },
+			data: { file: null }
 		});
 	}
 }

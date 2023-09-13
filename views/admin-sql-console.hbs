@@ -1,0 +1,100 @@
+{{> head}}
+
+{{> admin_nav }}
+
+<div class='container-fluid mt-3'>
+
+	{{> admin_offcanvas }}
+
+	<div class='row mt-3 mt-lg-0'>
+		<div class='col-lg-3 d-lg-block d-none'>
+			{{> admin_menu}}
+		</div>
+		<div class='col'>
+
+			<h2 class='mb-3'>SQL Console</h2>
+
+			<div class="alert alert-danger">
+				<h4 class="alert-heading">Very danger zone!</h4>
+				<p>
+					This console provides unrestricted access to the database using the SQL language.
+					Any careless command poses a serious risk to the data stored in your database.
+					We recommend using this console only in cases of extreme necessity and with a
+					full awareness of your actions.
+				</p>
+				<hr>
+				<p class="mb-0">Use this at your own risk.</p>
+			</div>
+
+			<form action='/megami/sql-console' method='get'>
+				<div class="mb-3">
+					<label for="sqlConsoleTextarea" class="form-label">Write your SQL code here</label>
+					<textarea
+						name='query'
+						class="form-control"
+						id="sqlConsoleTextarea"
+						rows="10"
+						required
+						autocomplete='off'
+					></textarea>
+				</div>
+
+				<div class="mb-3">
+					<label for="sqlConsolePwd" class="form-label">SQL console password</label>
+					<input name='password' type="password" class="form-control" id="sqlConsolePwd" required>
+				</div>
+
+				<div class="mb-3 form-check">
+					<input name='agree' type="checkbox" class="form-check-input" id="sqlConsoleCheck" required>
+					<label class="form-check-label" for="sqlConsoleCheck">
+						<strong>I am confident in my actions</strong>
+					</label>
+				</div>
+
+				<button type="submit" class="btn btn-danger">Run SQL script</button>
+			</form>
+
+			{{# if exception }}
+				<div class='alert alert-danger mt-3'>
+					<strong>クソ！</strong> {{ exception }}
+				</div>
+			{{/if}}
+
+			{{# if queryResult}}
+				<table class='table table-striped table-bordered mt-3'>
+					<thead>
+					<tr>
+						<th scope='col'>#</th>
+						{{# each queryResult.[0] }}
+							<th scope='col'>
+								{{ @key }}
+							</th>
+						{{/each}}
+					</tr>
+					</thead>
+					<tbody>
+					{{# each queryResult}}
+						<tr>
+							<th scope="row">{{@index}}</th>
+							{{# each this}}
+								<td>
+									{{# if this }}
+										{{ this }}
+									{{ else }}
+										<span class='text-info'>[null]</span>
+									{{/ if }}
+								</td>
+							{{/each}}
+						</tr>
+					{{/ each }}
+					</tbody>
+				</table>
+			{{/if}}
+
+		</div>
+	</div>
+</div>
+
+<script src='/js/megami-dashboard.js'></script>
+
+{{> eof}}

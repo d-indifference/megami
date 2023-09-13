@@ -1,0 +1,68 @@
+{{> head}}
+
+{{> admin_nav }}
+
+<div class='container-fluid mt-3'>
+
+	{{> admin_offcanvas }}
+
+	<div class='row mt-3 mt-lg-0'>
+		<div class='col-lg-3 d-lg-block d-none'>
+			{{> admin_menu}}
+		</div>
+		<div class='col'>
+
+			<h2>Your profile</h2>
+
+			<p>
+				Your email: <strong>{{ session.email }}</strong> (email can not be changed)
+			</p>
+
+			<p>
+				Your authority: {{# if (eq session.role "ADMIN") }}
+					<span class="badge bg-primary">{{ session.role }}</span>
+				{{/ if }}
+				{{# if (eq session.role "MODERATOR") }}
+					<span class="badge bg-secondary">{{ session.role }}</span>
+				{{/ if }} (can be changed only by administrators)</p>
+
+			<form action='/megami/profile/update' method='post'>
+				<h4>Change password</h4>
+
+				<div class="mb-3">
+					<label for="changePwdOld" class="form-label">Old password</label>
+					<input type="password" name='oldPassword' class="form-control" id="changePwdOld">
+				</div>
+
+				<div class="mb-3">
+					<label for="changePwdNew" class="form-label">New password</label>
+					<input type="password" name='newPassword' class="form-control" id="changePwdNew">
+				</div>
+
+				<div class="mb-3">
+					<label for="changePwdConfirm" class="form-label">Confirm new password</label>
+					<input type="password" name='confirmPassword' class="form-control" id="changePwdConfirm">
+				</div>
+
+				<button type="submit" class="btn btn-primary">Change password</button>
+			</form>
+
+			<hr>
+
+			<form action='/megami/profile/delete' method='post' class='mt-4'>
+				<h4>Delete account</h4>
+
+				<p class='text-danger'>Once you delete your account, there is no going back. Please be certain.</p>
+
+				<button type='submit' class='btn btn-danger'>Delete account</button>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+<script src='/js/megami-dashboard.js'></script>
+
+{{> eof}}
+
+

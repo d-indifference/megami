@@ -16,6 +16,7 @@ export interface ThreadRepliesView {
 		slug: string,
 		threadNumber: number,
 		dto: ThreadReplyCreateDto,
+		ip: string,
 		res: Response
 	): Promise<void>;
 

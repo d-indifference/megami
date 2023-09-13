@@ -4,6 +4,7 @@ import { ThreadsView } from './board/views/threads.view.interface';
 import { IndexPage } from './types/index-page.type';
 import { BoardsView } from './board/views/boards.view.interface';
 import { BoardsList } from './board/types/boards-list.type';
+import { SiteSettingsService } from './site-settings/services/site-settings.service';
 
 /**
  * Main Application Controller
@@ -14,7 +15,9 @@ export class AppController {
 		@Inject(ThreadsView)
 		private readonly threadsView: ThreadsView,
 		@Inject(BoardsView)
-		private readonly boardsView: BoardsView
+		private readonly boardsView: BoardsView,
+		@Inject(SiteSettingsService)
+		private readonly siteSettingsService: SiteSettingsService
 	) {}
 
 	/**
@@ -22,9 +25,15 @@ export class AppController {
 	 */
 	@Get()
 	@Render('index')
-	public index(): IndexPage {
+	public async index(): Promise<IndexPage> {
 		return {
-			title: 'Megami Image Board'
+			title: await this.siteSettingsService.getTitle(),
+			siteLogo: await this.siteSettingsService.getTitle(),
+			slogan: (await this.siteSettingsService.getSiteSettings()).slogan,
+			description: (await this.siteSettingsService.getSiteSettings())
+				.description,
+			mainLogo: (await this.siteSettingsService.getSiteSettings())
+				.mainPageLogoAddress
 		};
 	}
 

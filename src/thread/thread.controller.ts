@@ -19,6 +19,7 @@ import { ThreadRepliesView } from './views/thread-replies.view.interface';
 import { ThreadReplyCreateDto } from './dto/thread-reply.create.dto';
 import { ThreadWithRepliesPage } from './types/thread-with-replies-page.type';
 import { ThreadDeleteDto } from './dto/thread.delete.dto';
+import { RealIP } from 'nestjs-real-ip';
 
 /**
  * Controller for threads
@@ -53,9 +54,10 @@ export class ThreadController {
 	public async createNewThread(
 		@Param('board') slug: string,
 		@Body() dto: ThreadCreateDto,
+		@RealIP() ip: string,
 		@Res() res: Response
 	): Promise<void> {
-		await this.newThreadView.createThread(slug, dto, res);
+		await this.newThreadView.createThread(slug, dto, ip, res);
 	}
 
 	/**
@@ -82,9 +84,16 @@ export class ThreadController {
 		@Param('board') slug: string,
 		@Param('threadNumber') threadNumber: number,
 		@Body() dto: ThreadReplyCreateDto,
+		@RealIP() ip: string,
 		@Res() res: Response
 	): Promise<void> {
-		await this.threadRepliesView.createReply(slug, threadNumber, dto, res);
+		await this.threadRepliesView.createReply(
+			slug,
+			threadNumber,
+			dto,
+			ip,
+			res
+		);
 	}
 
 	/**

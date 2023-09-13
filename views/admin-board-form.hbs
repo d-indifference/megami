@@ -1,0 +1,90 @@
+{{> head}}
+
+{{> admin_nav }}
+
+<div class='container-fluid mt-3'>
+
+	{{> admin_offcanvas }}
+
+	<div class='row mt-3 mt-lg-0'>
+		<div class='col-lg-3 d-lg-block d-none'>
+			{{> admin_menu}}
+		</div>
+		<div class='col'>
+
+			{{# if board }}
+				<h2 class='mb-3'>Edit board /{{ board.slug }}/</h2>
+			{{ else }}
+				<h2 class='mb-3'>New Board</h2>
+			{{/if}}
+
+			<p class='text-start'>
+				<a href='/megami/boards' class='btn btn-outline-secondary'>Back to boards</a>
+			</p>
+
+			<form
+				{{# if board }}
+					action='/megami/boards/edit/{{ board.id }}'
+				{{ else }}
+					action='/megami/boards/edit'
+				{{/if}} method='post'>
+				<div class="mb-3">
+					{{# unless board }}
+						<label for="boardFormSlug" class="form-label">Board slug</label>
+						<input
+							type="text"
+							name='slug'
+							class="form-control"
+							id="boardFormSlug"
+							autocomplete='off'
+							required
+							aria-describedby='boardFormSlugHelp'
+						>
+						<div id="boardFormSlugHelp" class="form-text">Board slug can contain only lowercase latin letters and numbers from 0 to 9.</div>
+					{{/ unless }}
+
+					{{# if board }}
+						<p>Slug: <strong>/{{ board.slug }}/</strong> - this value can not be changed</p>
+					{{/if}}
+				</div>
+
+				<div class="mb-3">
+					<label for="boardFormName" class="form-label">Board name</label>
+					<input
+						type="text"
+						name='name'
+						class="form-control"
+						id="boardFormName"
+						autocomplete='off'
+						required
+						{{# if board }}value='{{ board.name }}'{{/if}}
+					>
+				</div>
+
+				<button type="submit" class="btn btn-primary">
+					{{# if board }}
+						Update board
+					{{ else }}
+						Create new board
+					{{/if}}
+				</button>
+			</form>
+
+			{{# if board }}
+				<hr>
+				<h5 class='text-danger'>Danger zone</h5>
+
+				<p class='text-danger'>
+					Once you delete board {{ board.name }}, there is no going back. Please be certain.
+				</p>
+
+				<form action='/megami/boards/delete/{{ board.id }}' method='post'>
+					<button type='submit' class='btn btn-danger'>Delete board /{{ board.slug }}/</button>
+				</form>
+			{{/if}}
+
+		</div>
+	</div>
+</div>
+
+{{> eof}}

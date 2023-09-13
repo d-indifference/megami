@@ -1,0 +1,139 @@
+{{> head}}
+
+{{> admin_nav }}
+
+<div class='container-fluid mt-3'>
+
+	{{> admin_offcanvas }}
+
+	<div class='row mt-3 mt-lg-0'>
+		<div class='col-lg-3 d-lg-block d-none'>
+			{{> admin_menu}}
+		</div>
+		<div class='col'>
+
+			{{# if staffMember }}
+				<h2 class='mb-3'>Staff edit</h2>
+			{{ else }}
+				<h2 class='mb-3'>New staff member</h2>
+			{{/ if}}
+
+			<a href='/megami/staff' class='btn btn-outline-secondary mb-3'>
+				Back to staff list
+			</a>
+
+			{{# if staffMember }}
+				<form action='/megami/staff/edit/{{ staffMember.id }}' method='post'>
+					<div class="mb-3">
+						<label for="staffEditEmail" class="form-label">Email address</label>
+						<input
+							name='email'
+							type="email"
+							class="form-control"
+							id="staffEditEmail"
+							placeholder="Email address"
+							autocomplete='off'
+							required
+							value='{{ staffMember.email }}'
+						>
+					</div>
+
+					<div class='mb-3'>
+						<label for="staffEditAuthority" class="form-label">Authority</label>
+
+						<select
+							name='role'
+							id='staffEditAuthority'
+							class="form-select"
+							aria-label="User's authority"
+							required
+						>
+							{{# if (eq staffMember.role "ADMIN") }}
+								<option selected value='ADMIN'>ADMIN</option>
+								<option value='MODERATOR'>MODERATOR</option>
+							{{/if}}
+							{{# if (eq staffMember.role "MODERATOR") }}
+								<option value='ADMIN'>ADMIN</option>
+								<option selected value='MODERATOR'>MODERATOR</option>
+							{{/if}}
+						</select>
+					</div>
+
+					<button class='btn btn-primary' type='submit'>Save changes</button>
+
+					<hr>
+
+					<h5 class='mb-3 text-danger'>Danger zone</h5>
+				</form>
+
+				<form action='/megami/staff/delete/{{ staffMember.id }}' method='post'>
+					<p class='text-danger'>
+						Once you delete user {{ staffMember.email }}, there is no going back. Please be certain.
+					</p>
+
+					<button type='submit' class='btn btn-danger'>
+						Delete user {{ staffMember.email }}
+					</button>
+				</form>
+			{{ else }}
+				<form action='/megami/staff/edit' method='post'>
+					<div class="mb-3">
+						<label for="staffEditEmail" class="form-label">Email address</label>
+						<input
+							name='email'
+							type="email"
+							class="form-control"
+							id="staffEditEmail"
+							placeholder="Email address"
+							autocomplete='off'
+							required
+						>
+					</div>
+
+					<div class='mb-3'>
+						<label for="staffEditPassword" class="form-label">Password</label>
+						<input
+							name='password'
+							type="password"
+							class="form-control"
+							id="staffEditPassword"
+							placeholder="Password"
+							autocomplete='off'
+							required
+						>
+					</div>
+
+					<div class='mb-3'>
+						<label for="staffEditAuthority" class="form-label">Authority</label>
+
+						<select
+							name='role'
+							id='staffEditAuthority'
+							class="form-select"
+							aria-label="User's authority"
+							aria-describedby='staffEditAuthorityHelp'
+							required
+						>
+							<option value='ADMIN'>ADMIN</option>
+							<option value='MODERATOR'>MODERATOR</option>
+						</select>
+
+						<div id="staffEditAuthorityHelp" class="form-text">
+							<span class='badge bg-primary'>ADMIN</span> is application superuser,
+							who can change all available settings, work with boards, files and other staff members.
+							And he can moderate site content.<br>
+							<span class='badge bg-secondary'>MODERATOR</span> can only moderate site content.
+						</div>
+					</div>
+
+					<button class='btn btn-primary' type='submit'>Create new member</button>
+				</form>
+			{{/if}}
+
+		</div>
+	</div>
+</div>
+
+<script src='/js/megami-dashboard.js'></script>
+
+{{> eof}}

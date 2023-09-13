@@ -8,6 +8,8 @@ import { ThreadCommands } from '../../commands/thread.commands.interface';
 import { Response } from 'express';
 import { setPwdCookie } from '../../../toolkit/set-pwd-cookie.function';
 import { ThreadDeleteDto } from 'src/thread/dto/thread.delete.dto';
+import { SiteSettingsService } from '../../../site-settings/services/site-settings.service';
+import { LOG } from '../../../toolkit';
 
 /**
  * View for thread replies
@@ -19,7 +21,9 @@ export class ThreadRepliesViewImpl implements ThreadRepliesView {
 		@Inject(ThreadCommands)
 		private readonly threadCommands: ThreadCommands,
 		@Inject(BoardQueries)
-		private readonly boardQueries: BoardQueries
+		private readonly boardQueries: BoardQueries,
+		@Inject(SiteSettingsService)
+		private readonly siteSettingsService: SiteSettingsService
 	) {}
 
 	/**
@@ -35,6 +39,8 @@ export class ThreadRepliesViewImpl implements ThreadRepliesView {
 		dto: ThreadDeleteDto,
 		res: Response
 	): Promise<void> {
+		LOG.log(this, `delete comments by password, slug=${slug}`, dto);
+
 		if (!dto.delete) {
 			res.redirect(`/${slug}/res/${threadNumber}`);
 		} else {
@@ -74,6 +80,11 @@ export class ThreadRepliesViewImpl implements ThreadRepliesView {
 		slug: string,
 		numberOnBoard: number
 	): Promise<ThreadWithRepliesPage> {
+		LOG.log(this, 'get thread replies page', {
+			slug,
+			numberOnBoard
+		});
+
 		const openingPost =
 			await this.threadQueries.findOpenPostBySlugAndNumber(
 				slug,
@@ -93,10 +104,11 @@ export class ThreadRepliesViewImpl implements ThreadRepliesView {
 		);
 
 		return {
-			title: `${board.name} — Megami Image Board`,
+			title: await this.siteSettingsService.buildTitle(board.name),
 			openingPost,
 			filesCount: threadFiles,
-			replies
+			replies,
+			siteLogo: await this.siteSettingsService.getTitle()
 		} as unknown as ThreadWithRepliesPage;
 	}
 
@@ -105,18 +117,25 @@ export class ThreadRepliesViewImpl implements ThreadRepliesView {
 	 * @param slug Board slug
 	 * @param threadNumber Thread number
 	 * @param dto comment creation DTO
+	 * @param ip Poster's IP
 	 * @param res Express.js response object
 	 */
 	public async createReply(
 		slug: string,
 		threadNumber: number,
 		dto: ThreadReplyCreateDto,
+		ip: string,
 		res: Response
 	): Promise<void> {
+		LOG.log(this, `create new thread reply, ip=${ip}`, dto);
+
+		const dtoWithIp = dto;
+		dtoWithIp.posterIp = ip;
+
 		const newReply = await this.threadCommands.createThreadReply(
 			slug,
 			threadNumber,
-			dto
+			dtoWithIp
 		);
 
 		setPwdCookie(res, dto.password);
