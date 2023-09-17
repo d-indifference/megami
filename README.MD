@@ -20,7 +20,6 @@ follow it through to the final release :).
 * Tread catalogs and gallery.
 
 ### Planned features in next update
-* Backend forms validation.
 * Huge text collapsing.
 * Rich markdown
 * Hidden boards
@@ -106,7 +105,7 @@ $ exit
 
 ## Project environment variables
 * `MEGAMI_INTERNAL_PORT` - internal port for `megami-backend` docker container or main port of your application if you will run it without Docker.
-* `MEGAMI_EXTTERNAL_PORT` - external port for `megami-backend` docker container. If you run the app by Docker, you should go to this port to start your application.
+* `MEGAMI_EXTERNAL_PORT` - external port for `megami-backend` docker container. If you run the app by Docker, you should go to this port to start your application.
 * `MEGAMI_VOLUMES_DIR` - directory name for Postgres and PgAdmin volumes if you run the app by Docker.
 * `MEGAMI_APP_VOLUME` - application volume path for Docker.
 * `MEGAMI_POSTGRES_VOLUME` - path to Postgres volume.

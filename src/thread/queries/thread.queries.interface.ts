@@ -3,6 +3,8 @@ import { Page } from '../../toolkit/pagination/page.type';
 import { ThreadOpenPostDto } from '../dto/thread-open-post.dto';
 import { ThreadReplyDto } from '../dto/thread-reply.dto';
 import { Comment } from '@prisma/client';
+import { ThreadModerationDto } from '../dto/thread-moderation.dto';
+import { ThreadFileModerationDto } from '../dto/thread-file-moderation.dto';
 
 /**
  * Queries for thread entities
@@ -15,21 +17,31 @@ export interface ThreadQueries {
 
 	findOpenPostBySlugAndNumber(
 		slug: string,
-		numberOnBoard: number
+		numberOnBoard: bigint
 	): Promise<ThreadOpenPostDto>;
 
 	findThreadExact(
 		slug: string,
-		numberOnBoard: number
+		numberOnBoard: bigint
 	): Promise<ThreadOpenPostDto>;
 
-	findReplies(slug: string, numberOnBoard: number): Promise<ThreadReplyDto[]>;
+	findReplies(slug: string, numberOnBoard: bigint): Promise<ThreadReplyDto[]>;
 
-	getFilesCount(slug: string, numberOnBoard: number): Promise<number>;
+	getFilesCount(slug: string, numberOnBoard: bigint): Promise<number>;
 
 	findLastCommentByIp(ip: string): Promise<Comment>;
 
+	findCommentsPostedLastHours(hours: number): Promise<ThreadModerationDto[]>;
+
+	findUploadsPostedLastHours(
+		hours: number
+	): Promise<ThreadFileModerationDto[]>;
+
 	count(): Promise<number>;
+
+	getUniquePostersCountInThread(id: string): Promise<number>;
+
+	findAllEntitiesByIds(ids: string[]): Promise<Comment[]>;
 }
 
 export const ThreadQueries = Symbol('ThreadQueries');

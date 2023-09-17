@@ -14,6 +14,8 @@ import * as path from 'path';
 import * as process from 'process';
 import { SiteSettingsService } from '../../../site-settings/services/site-settings.service';
 import { LOG } from '../../../toolkit';
+import { DeleteDto } from '../../../toolkit/delete.dto';
+import { BanPolicyService } from '../../../ban/ban-policy.service';
 
 /**
  * Commands for threads
@@ -29,7 +31,9 @@ export class ThreadCommandsImpl implements ThreadCommands {
 		@Inject(ThreadRepo)
 		private readonly threadRepo: ThreadRepo,
 		@Inject(SiteSettingsService)
-		private readonly siteSettingsService: SiteSettingsService
+		private readonly siteSettingsService: SiteSettingsService,
+		@Inject(BanPolicyService)
+		private readonly banService: BanPolicyService
 	) {}
 
 	/**
@@ -40,7 +44,7 @@ export class ThreadCommandsImpl implements ThreadCommands {
 	 */
 	public async createThreadReply(
 		slug: string,
-		parentNumber: number,
+		parentNumber: bigint,
 		dto: ThreadReplyCreateDto
 	): Promise<CreationResultDto<string>> {
 		LOG.log(
@@ -48,6 +52,8 @@ export class ThreadCommandsImpl implements ThreadCommands {
 			`create thread reply, parentNumber=${parentNumber}, slug=${slug}`,
 			dto
 		);
+
+		await this.banService.applyBanPolicy(dto.posterIp);
 
 		await this.applyDelayPolicy(
 			dto.posterIp,
@@ -117,6 +123,8 @@ export class ThreadCommandsImpl implements ThreadCommands {
 	): Promise<CreationResultDto<string>> {
 		LOG.log(this, `create thread , slug=${slug}`, dto);
 
+		await this.banService.applyBanPolicy(dto.posterIp);
+
 		await this.applyDelayPolicy(
 			dto.posterIp,
 			(
@@ -177,6 +185,53 @@ export class ThreadCommandsImpl implements ThreadCommands {
 		}
 
 		LOG.log(this, 'comments was deleted');
+	}
+
+	/**
+	 * Delete comments by UUIDs
+	 * @param dto Delete DTO
+	 */
+	public async deleteCommentsByIds(dto: DeleteDto): Promise<void> {
+		LOG.log(this, 'delete comments by ids', dto);
+
+		const deleteCandidates = await this.threadRepo.findAllByIdIn(dto.ids);
+
+		for (const candidate of deleteCandidates) {
+			if (!candidate.parentId) {
+				LOG.log(this, `delete thread, id=${candidate.id}`);
+
+				LOG.log(this, 'finding thread replies...');
+
+				const repliesOfDeleteCandidate =
+					await this.threadRepo.findReplies(
+						candidate.boardSlug,
+						candidate.numberOnBoard
+					);
+
+				for (const reply of repliesOfDeleteCandidate) {
+					LOG.log(this, 'reply found', {
+						id: reply.id,
+						parentId: reply.parentId
+					});
+
+					if (reply.file) {
+						await this.deleteFileFromDisk(reply.file);
+					}
+				}
+
+				await this.threadRepo.deletePostsWhereParentId(candidate.id);
+
+				LOG.log(this, 'replies deleted');
+			}
+
+			if (candidate.file) {
+				await this.deleteFileFromDisk(candidate.file);
+			}
+		}
+
+		await this.threadRepo.deletePostsByIds(dto);
+
+		LOG.log(this, 'comments deleted');
 	}
 
 	/**
@@ -290,5 +345,24 @@ export class ThreadCommandsImpl implements ThreadCommands {
 				);
 			}
 		}
+	}
+
+	/**
+	 * Delete files form disk
+	 * @param file Path to file with board slug
+	 */
+	private async deleteFileFromDisk(file: string): Promise<void> {
+		LOG.log(this, 'unlink file', { file });
+
+		const pathToFile = path.join(
+			process.cwd(),
+			this.configService.get('MEGAMI_ASSETS_PUBLIC_DIR'),
+			this.configService.get('MEGAMI_FILES_DIR'),
+			file
+		);
+
+		await fs.unlink(pathToFile);
+
+		LOG.log(this, 'unlinked file', { file });
 	}
 }

@@ -6,7 +6,8 @@ import {
 	Param,
 	Post,
 	Render,
-	Res
+	Res,
+	Session
 } from '@nestjs/common';
 import { ThreadsView } from '../board/views/threads.view.interface';
 import { BoardPage } from '../board/types/board-page.type';
@@ -20,6 +21,7 @@ import { ThreadReplyCreateDto } from './dto/thread-reply.create.dto';
 import { ThreadWithRepliesPage } from './types/thread-with-replies-page.type';
 import { ThreadDeleteDto } from './dto/thread.delete.dto';
 import { RealIP } from 'nestjs-real-ip';
+import { SessionDto } from '../management/dto/session/session.dto';
 
 /**
  * Controller for threads
@@ -67,11 +69,13 @@ export class ThreadController {
 	@Render('thread')
 	public async getThread(
 		@Param('board') board: string,
-		@Param('threadNumber') threadNumber: number
+		@Param('threadNumber') threadNumber: number,
+		@Session() session: SessionDto
 	): Promise<ThreadWithRepliesPage> {
 		return await this.threadRepliesView.getThreadRepliesPage(
 			board,
-			Number(threadNumber)
+			BigInt(threadNumber),
+			session
 		);
 	}
 
@@ -89,7 +93,7 @@ export class ThreadController {
 	): Promise<void> {
 		await this.threadRepliesView.createReply(
 			slug,
-			threadNumber,
+			BigInt(threadNumber),
 			dto,
 			ip,
 			res
@@ -109,7 +113,7 @@ export class ThreadController {
 	): Promise<void> {
 		await this.threadRepliesView.deleteCommentsByPwd(
 			slug,
-			threadNumber,
+			BigInt(threadNumber),
 			dto,
 			res
 		);

@@ -134,6 +134,10 @@ import { ManagementStaffController } from './controllers/management-staff.contro
 		{
 			provide: UserQueries,
 			useClass: UserQueriesImpl
+		},
+		{
+			provide: UserMapper,
+			useClass: UserMapperImpl
 		}
 	]
 })

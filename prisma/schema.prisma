@@ -53,8 +53,9 @@ model User {
 model Ban {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now())
-  adminId   String   @db.Uuid
-  admin     User     @relation("WhoBanned", fields: [adminId], references: [id])
+  banTill   DateTime
+  adminId   String?  @db.Uuid
+  admin     User?    @relation("WhoBanned", fields: [adminId], references: [id])
   ip        String   @db.VarChar(64)
   reason    String?  @db.Text
 }

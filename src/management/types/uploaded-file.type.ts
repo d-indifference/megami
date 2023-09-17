@@ -25,5 +25,5 @@ export type UploadedFile = {
 	/**
 	 * Upload date
 	 */
-	createdAt: Date;
+	createdAt: Date | string;
 };

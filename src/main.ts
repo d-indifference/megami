@@ -20,6 +20,8 @@ import { UnauthorizedExceptionFilter } from './exceptions/unauthorized-exception
 import { MethodNotAllowedExceptionFilter } from './exceptions/method-not-allowed-exception.filter';
 import { SiteSettingsService } from './site-settings/services/site-settings.service';
 import { eqHandlebarsHelper } from './handlebars/eq.handlebars.helper';
+import { IpListsFileService } from './moderation/services/ip-lists-file.service';
+import { ForbiddenExceptionFilter } from './exceptions/forbidden-exception.filter';
 
 let internalPort = 3000;
 
@@ -34,6 +36,7 @@ const bootstrap = async () => {
 	const migrator = app.get(MigratorService);
 	const rootUserInitService = app.get(RootUserInitService);
 	const siteSettingsService = app.get(SiteSettingsService);
+	const ipListsFileService = app.get(IpListsFileService);
 
 	internalPort = configService.get('MEGAMI_INTERNAL_PORT');
 
@@ -75,6 +78,7 @@ const bootstrap = async () => {
 		app.useGlobalFilters(new InternalServerErrorExceptionFilter());
 		app.useGlobalFilters(new UnauthorizedExceptionFilter());
 		app.useGlobalFilters(new MethodNotAllowedExceptionFilter());
+		app.useGlobalFilters(new ForbiddenExceptionFilter());
 
 		app.use(cookieParser());
 		app.use(session(sessionConfig(configService)));
@@ -82,6 +86,8 @@ const bootstrap = async () => {
 		await rootUserInitService.initRootUser();
 
 		await siteSettingsService.createSiteSettings();
+
+		await ipListsFileService.createIpListsFileIfNotExists();
 
 		await app.listen(internalPort);
 	}

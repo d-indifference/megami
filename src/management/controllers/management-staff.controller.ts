@@ -99,8 +99,6 @@ export class ManagementStaffController {
 		@Param('id') id: string,
 		@Res() res: Response
 	): Promise<void> {
-		console.log('Вошло хоть?');
-
 		await this.administrationPageView.deleteStaffMember(id, res);
 	}
 }

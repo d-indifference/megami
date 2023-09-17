@@ -1,0 +1,57 @@
+{{> head}}
+
+{{> admin_nav }}
+
+<div class='container-fluid mt-3'>
+
+	{{> admin_offcanvas }}
+
+	<div class='row mt-3 mt-lg-0'>
+		<div class='col-lg-3 d-lg-block d-none'>
+			{{> admin_menu}}
+		</div>
+		<div class='col'>
+
+			<h2 class='mb-3'>Filtered IPs</h2>
+
+			<p class='mb-2 text-secondary'>
+				In these fields, place
+				regular expressions that match the necessary
+				IP addresses at every new line that need to be added to the white list or black list.
+			</p>
+
+			<form action='/megami/moderation/ip-filter' method='post'>
+				<div class='mb-3'>
+					<label for='ipsBlackList' class="form-label">IP blacklist</label>
+					<textarea
+						name='blackList'
+						class='form-control'
+						id='ipsBlackList'
+						cols='30'
+						rows='10'
+					>{{# each ipLists.blackList }}{{ this }}
+{{/each}}</textarea>
+				</div>
+
+				<div class='mb-3'>
+					<label for='ipsWhiteList' class="form-label">IP whitelist</label>
+					<textarea
+						name='whiteList'
+						class='form-control'
+						id='ipsWhiteList'
+						cols='30'
+						rows='10'
+					>{{# each ipLists.whiteList }}{{ this }}
+{{/each}}</textarea>
+				</div>
+
+				<button type='submit' class='btn btn-primary'>Save changes</button>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+<script src='/js/megami-dashboard.js'></script>
+
+{{> eof}}

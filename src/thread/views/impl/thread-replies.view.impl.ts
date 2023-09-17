@@ -10,6 +10,8 @@ import { setPwdCookie } from '../../../toolkit/set-pwd-cookie.function';
 import { ThreadDeleteDto } from 'src/thread/dto/thread.delete.dto';
 import { SiteSettingsService } from '../../../site-settings/services/site-settings.service';
 import { LOG } from '../../../toolkit';
+import { SessionDto } from '../../../management/dto/session/session.dto';
+import { SessionPayloadDto } from '../../../management/dto/session/session-payload.dto';
 
 /**
  * View for thread replies
@@ -35,7 +37,7 @@ export class ThreadRepliesViewImpl implements ThreadRepliesView {
 	 */
 	public async deleteCommentsByPwd(
 		slug: string,
-		threadNumber: number,
+		threadNumber: bigint,
 		dto: ThreadDeleteDto,
 		res: Response
 	): Promise<void> {
@@ -75,10 +77,12 @@ export class ThreadRepliesViewImpl implements ThreadRepliesView {
 	 * Get page with thread replies
 	 * @param slug Board slug
 	 * @param numberOnBoard Thread number
+	 * @param session Session data
 	 */
 	public async getThreadRepliesPage(
 		slug: string,
-		numberOnBoard: number
+		numberOnBoard: bigint,
+		session: SessionDto
 	): Promise<ThreadWithRepliesPage> {
 		LOG.log(this, 'get thread replies page', {
 			slug,
@@ -106,9 +110,14 @@ export class ThreadRepliesViewImpl implements ThreadRepliesView {
 		return {
 			title: await this.siteSettingsService.buildTitle(board.name),
 			openingPost,
-			filesCount: threadFiles,
+			filesCount: threadFiles + 1,
 			replies,
-			siteLogo: await this.siteSettingsService.getTitle()
+			siteLogo: await this.siteSettingsService.getTitle(),
+			session: this.extractSessionPayload(session),
+			postersCount:
+				await this.threadQueries.getUniquePostersCountInThread(
+					openingPost.id
+				)
 		} as unknown as ThreadWithRepliesPage;
 	}
 
@@ -122,7 +131,7 @@ export class ThreadRepliesViewImpl implements ThreadRepliesView {
 	 */
 	public async createReply(
 		slug: string,
-		threadNumber: number,
+		threadNumber: bigint,
 		dto: ThreadReplyCreateDto,
 		ip: string,
 		res: Response
@@ -157,5 +166,17 @@ export class ThreadRepliesViewImpl implements ThreadRepliesView {
 		}
 
 		return (candidates as string[]).map(candidate => BigInt(candidate));
+	}
+
+	private extractSessionPayload(session: SessionDto): SessionPayloadDto {
+		if (!session) {
+			return null;
+		}
+
+		if (!session.payload) {
+			return null;
+		}
+
+		return session.payload;
 	}
 }

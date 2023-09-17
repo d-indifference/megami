@@ -2,7 +2,7 @@ import { SessionPayloadDto } from '../dto/session/session-payload.dto';
 import { UploadedFile } from './uploaded-file.type';
 
 /**
- * Disk directiory files list
+ * Disk directory files list
  */
 export type DiskDirectoryListPage = {
 	/**

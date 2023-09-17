@@ -14,6 +14,7 @@ import * as process from 'process';
 import { Response } from 'express';
 import { SiteSettingsService } from '../../../site-settings/services/site-settings.service';
 import { LOG } from '../../../toolkit';
+import { DateTime } from 'luxon';
 
 /**
  * Stat by directory
@@ -176,7 +177,9 @@ export class DiskListPageViewImpl implements DiskListPageView {
 
 			result.push({
 				name: file,
-				createdAt: stats.birthtime,
+				createdAt: DateTime.fromJSDate(stats.birthtime).toFormat(
+					'dd.MM.yyyy HH:mm'
+				),
 				size: filesize(stats.size),
 				displayName: file,
 				fileInDbName: `/${boardSlug}/${file}`

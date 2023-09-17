@@ -18,6 +18,8 @@ import { ThreadController } from './thread.controller';
 import { ThreadRepliesView } from './views/thread-replies.view.interface';
 import { ThreadRepliesViewImpl } from './views/impl/thread-replies.view.impl';
 import { SiteSettingsModule } from '../site-settings/site-settings.module';
+import { ModeratorPostDeletionContextProcessor } from './strategies';
+import { BanModule } from '../ban/ban.module';
 
 /**
  * Module for threads and replies
@@ -31,10 +33,12 @@ import { SiteSettingsModule } from '../site-settings/site-settings.module';
 			inject: [ConfigService],
 			useFactory: nestjsFormDataConfig
 		}),
+		BanModule,
 		SiteSettingsModule
 	],
 	providers: [
 		PrismaService,
+		ModeratorPostDeletionContextProcessor,
 		{
 			provide: NewThreadView,
 			useClass: NewThreadViewImpl
@@ -62,6 +66,7 @@ import { SiteSettingsModule } from '../site-settings/site-settings.module';
 	],
 	controllers: [ThreadController],
 	exports: [
+		ModeratorPostDeletionContextProcessor,
 		{
 			provide: ThreadQueries,
 			useClass: ThreadQueriesImpl

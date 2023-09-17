@@ -1,5 +1,6 @@
 import { ThreadOpenPostDto } from '../dto/thread-open-post.dto';
 import { ThreadReplyDto } from '../dto/thread-reply.dto';
+import { SessionPayloadDto } from '../../management/dto/session/session-payload.dto';
 
 /**
  * Payload for thread creation page
@@ -16,9 +17,19 @@ export type ThreadWithRepliesPage = {
 	siteLogo: string;
 
 	/**
+	 * Session Data
+	 */
+	session: SessionPayloadDto;
+
+	/**
 	 * Count of files
 	 */
 	filesCount: number;
+
+	/**
+	 * Count of posters
+	 */
+	postersCount: number;
 
 	/**
 	 * Open Post DTO

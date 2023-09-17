@@ -112,6 +112,21 @@
 							At: <strong class='posting-time'>{{ openingPost.createdAt }}</strong>
 						</span>
 						<span class="badge bg-info text-dark">OP</span>
+
+						{{# if session.email }}
+							&nbsp;&nbsp;<span>IP: <strong class='text-primary'>
+									{{ openingPost.posterIp }}
+								</strong>&nbsp;&nbsp;
+							</span>
+							<a
+								href='/megami/moderation/ban?ip={{ openingPost.posterIp }}&postId={{ openingPost.id }}'
+								class='btn btn-outline-danger btn-sm'
+								target='_blank'
+							>
+								Ban
+							</a>
+						{{/ if }}
+
 						<button
 							type="button"
 							class="btn btn-secondary btn-sm"
@@ -174,6 +189,20 @@
 							<span class='text-secondary'>
 								At: <strong class='posting-time'>{{ this.createdAt }}</strong>
 							</span>
+
+							{{# if ../session.email }}
+								&nbsp;&nbsp;<span>IP: <strong class='text-primary'>
+									{{ this.posterIp }}
+									</strong>
+								</span>&nbsp;&nbsp;
+								<a
+									href='/megami/moderation/ban?ip={{ this.posterIp }}&postId={{ this.id }}'
+									class='btn btn-outline-danger btn-sm'
+									target='_blank'
+								>
+									Ban
+								</a>
+							{{/ if }}
 
 							<button
 								type="button"

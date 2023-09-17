@@ -1,0 +1,61 @@
+{{> head}}
+
+{{> admin_nav }}
+
+<div class='container-fluid mt-3'>
+
+	{{> admin_offcanvas }}
+
+	<div class='row mt-3 mt-lg-0'>
+		<div class='col-lg-3 d-lg-block d-none'>
+			{{> admin_menu}}
+		</div>
+		<div class='col'>
+
+			<h2 class='mb-3'>Bans</h2>
+
+			<table class='table table-striped'>
+				<thead>
+					<tr>
+						<th scope='col'>#</th>
+						<th scope='col'>IP</th>
+						<th scope='col'>Ban till</th>
+						<th scope='col'>Reason</th>
+						<th scope='col'>Created at</th>
+						<th scope='col'>Banned by</th>
+						<th scope='col'></th>
+					</tr>
+				</thead>
+				<tbody>
+				{{# each bans }}
+					<tr>
+						<th scope='row'>{{@index}}</th>
+						<td>
+							<span class='text-primary'>{{ this.ip }}</span>
+						</td>
+						<td>{{ this.banTill }}</td>
+						<td>{{ this.reason }}</td>
+						<td>{{ this.createdAt }}</td>
+						<td>{{# if this.admin }}
+								<span class='text-primary'>{{ this.admin.email }}</span>
+							{{ else }}
+						{{/ if }}</td>
+						<td>
+							<form action='/megami/moderation/bans/delete/{{ this.id }}' method='post'>
+								<button type='submit' class='btn btn-danger'>
+									Delete ban
+								</button>
+							</form>
+						</td>
+					</tr>
+				{{/ each }}
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+</div>
+
+<script src='/js/megami-dashboard.js'></script>
+
+{{> eof}}

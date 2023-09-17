@@ -17,8 +17,6 @@ import { SessionDto } from '../dto/session/session.dto';
  */
 @Controller('megami')
 export class ManagementController {
-	// TODO: npm i nestjs-ip-filter
-
 	constructor(
 		@Inject(DashboardPageView)
 		private readonly dashboardPageView: DashboardPageViewImpl

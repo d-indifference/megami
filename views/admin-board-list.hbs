@@ -33,7 +33,10 @@
 					{{# each boards }}
 						<tr>
 							<th scope="row">{{@index}}</th>
-							<td><a href='/{{ this.slug }}' target='_blank'>/{{ this.slug }}/</a></td>
+							<td><a href='/{{ this.slug }}' target='_blank'>
+								/{{ this.slug }}/
+								<span class='icon-up-right-from-square text-secondary'></span>
+							</a></td>
 							<td>{{ this.name }}</td>
 							<td>{{ this.commentsCount }}</td>
 							<td>{{ this.filesCount }}</td>

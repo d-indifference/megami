@@ -3,6 +3,16 @@
  */
 export class ThreadOpenPostDto {
 	/**
+	 * Comment ID
+	 */
+	id: string;
+
+	/**
+	 * Poster IP
+	 */
+	posterIp: string;
+
+	/**
 	 * Created at
 	 */
 	createdAt: Date;

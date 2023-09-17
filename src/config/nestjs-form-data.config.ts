@@ -5,6 +5,7 @@ import * as process from 'process';
 
 /**
  * Config for NestjsFormDataModule
+ * @param configService ConfigService
  */
 export const nestjsFormDataConfig = (configService: ConfigService) => ({
 	storage: FileSystemStoredFile,

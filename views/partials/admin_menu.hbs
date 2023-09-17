@@ -33,21 +33,21 @@
 	</li>
 </ul>
 <div class="list-group">
-	<a href='/megami' class='list-group-item list-group-item-action'>
+	<a href='/megami/moderation/bans' class='list-group-item list-group-item-action'>
 		<span class='icon-ban'></span>
 		&nbsp;Bans
 	</a>
 {{# if (eq session.role "ADMIN") }}
-	<a href='/megami' class='list-group-item list-group-item-action'>
+	<a href='/megami/moderation/ip-filter' class='list-group-item list-group-item-action'>
 		<span class='icon-shield-halved'></span>
 		&nbsp;Filtered IPs
 	</a>
 {{/if}}
-	<a href='/megami' class='list-group-item list-group-item-action'>
+	<a href='/megami/moderation/recent-posts' class='list-group-item list-group-item-action'>
 		<span class='icon-comments'></span>
 		&nbsp;Recent posts
 	</a>
-	<a href='/megami' class='list-group-item list-group-item-action'>
+	<a href='/megami/moderation/recent-uploads' class='list-group-item list-group-item-action'>
 		<span class='icon-paperclip'></span>
 		&nbsp;Recent uploads
 	</a>
