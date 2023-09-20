@@ -70,8 +70,9 @@
 	<a href='/{{ openingPost.boardSlug }}' class='btn btn-outline-primary'>Go back</a>
 
 	<form action='/{{ openingPost.boardSlug }}/res/{{ openingPost.numberOnBoard }}/delete' method='post'>
-		<table class='table table-borderless mt-3 custom-thread-comments-table'>
-			<tr class='custom-thread-comments-table__opening-post'>
+		<table class='table table-striped mt-3'>
+			<thead>
+			<tr>
 				<td class='custom-thread-comment'>
 					<a name='{{ openingPost.numberOnBoard }}'></a>
 					<input
@@ -92,7 +93,7 @@
 							</a>
 						{{/if}}
 
-						<p class="h3 mt-3">{{ openingPost.subject }}</p>
+						<p class="h3 mt-3">{{{ openingPost.subject }}}</p>
 
 						<span class='text-secondary'>
 							Posted by:
@@ -100,20 +101,43 @@
 
 						{{# if openingPost.email }}
 							<a href='mailto:{{ openingPost.email }}'>
-								{{ openingPost.email }}
+								{{{ openingPost.email }}}
 							</a>
 						{{ else }}
 							<span class='text-primary'>
-								{{ openingPost.name }}
+								{{{ openingPost.name }}}
 							</span>
 						{{/if}}
 						<span class='text-secondary'>
 							At: <strong class='posting-time'>{{ openingPost.createdAt }}</strong>
 						</span>
 						<span class="badge bg-info text-dark">OP</span>
+
+						{{# if session.email }}
+							&nbsp;&nbsp;<span>IP: <strong class='text-primary'>
+									{{ openingPost.posterIp }}
+								</strong>&nbsp;&nbsp;
+							</span>
+							<a
+								href='/megami/moderation/ban/delete-post/{{ openingPost.id }}'
+								class='btn btn-sm btn-outline-danger'
+							>
+								Delete post
+							</a>
+							<a
+								href='/megami/moderation/ban?ip={{ openingPost.posterIp }}&postId={{ openingPost.id }}'
+								class='btn btn-danger btn-sm'
+								target='_blank'
+							>
+								Ban
+							</a>
+						{{/ if }}
+
+						<span class='text-success'>&nbsp;No. {{ openingPost.numberOnBoard }}&nbsp;</span>
+
 						<button
 							type="button"
-							class="btn btn-primary btn-sm"
+							class="btn btn-secondary btn-sm"
 							onclick='copyPermalink(this, {{ openingPost.numberOnBoard }})'
 						>
 							Permalink
@@ -123,14 +147,17 @@
 							class="btn btn-primary btn-sm"
 							data-bs-toggle="modal"
 							data-bs-target="#replyInThreadModal"
+							data-post-number="{{ openingPost.numberOnBoard }}"
 						>
 							Reply
 						</button>
-						<blockquote class='mt-3 custom-blockquote'>{{ openingPost.comment }}</blockquote>
+						<blockquote class='mt-3 custom-blockquote'>{{{ openingPost.comment }}}</blockquote>
 					</div>
 				</td>
 			</tr>
+			</thead>
 
+			<tbody>
 			{{# each replies }}
 				<tr>
 					<td class='custom-thread-comment'>
@@ -153,7 +180,7 @@
 								</a>
 							{{/if}}
 
-							<p class="h3 mt-3">{{ this.subject }}</p>
+							<p class="h3 mt-3">{{{ this.subject }}}</p>
 
 							<span class='text-secondary'>
 								Posted by:
@@ -161,20 +188,42 @@
 
 							{{# if this.email }}
 								<a href='mailto:{{ this.email }}'>
-									{{ this.email }}
+									{{{ this.email }}}
 								</a>
 							{{ else }}
 								<span class='text-primary'>
-									{{ this.name }}
+									{{{ this.name }}}
 								</span>
 							{{/if}}
 							<span class='text-secondary'>
 								At: <strong class='posting-time'>{{ this.createdAt }}</strong>
 							</span>
 
+							{{# if ../session.email }}
+								&nbsp;&nbsp;<span>IP: <strong class='text-primary'>
+									{{ this.posterIp }}
+									</strong>
+								</span>&nbsp;&nbsp;
+								<a
+									href='/megami/moderation/ban/delete-post/{{ this.id }}'
+									class='btn btn-sm btn-outline-danger'
+								>
+									Delete post
+								</a>
+								<a
+									href='/megami/moderation/ban?ip={{ this.posterIp }}&postId={{ this.id }}'
+									class='btn btn-danger btn-sm'
+									target='_blank'
+								>
+									Ban
+								</a>
+							{{/ if }}
+
+							<span class='text-success'>&nbsp;No. {{ this.numberOnBoard }}&nbsp;</span>
+
 							<button
 								type="button"
-								class="btn btn-primary btn-sm"
+								class="btn btn-secondary btn-sm"
 								onclick='copyPermalink(this, {{ this.numberOnBoard }})'
 							>
 								Permalink
@@ -184,26 +233,20 @@
 								class="btn btn-primary btn-sm"
 								data-bs-toggle="modal"
 								data-bs-target="#replyInThreadModal"
+								data-post-number="{{ this.numberOnBoard }}"
 							>
 								Reply
 							</button>
-							<blockquote class='mt-3 custom-blockquote'>{{ this.comment }}</blockquote>
+							<blockquote class='mt-3 custom-blockquote'>{{{ this.comment }}}</blockquote>
 						</div>
 					</td>
 				</tr>
 			{{/ each }}
+			</tbody>
 		</table>
 
 		<div>
-			[
-			<a href='#'>d</a>
-			]
-			[
-			<a href='#'>b</a> /
-			<a href='#'>vg</a> /
-			<a href='#'>a</a> /
-			<a href='#'>po</a>
-			]
+			{{{ boardBottomLinks }}}
 		</div>
 		<div class='custom-delete-comments'>
 			<span>
@@ -213,7 +256,7 @@
 			</span>
 			<label for="deletePostPassword" class="form-label">Password</label>
 			<input type="password" name='password' class="form-control custom-delete-comments__pwd" id="deletePostPassword">
-			<button type="submit" class="btn btn-primary mt-2">Delete</button>
+			<button type="submit" class="btn btn-secondary mt-2">Delete</button>
 		</div>
 	</form>
 </div>

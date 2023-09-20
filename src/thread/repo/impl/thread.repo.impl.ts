@@ -3,6 +3,7 @@ import { Comment } from '@prisma/client';
 import { PrismaService } from '../../../prisma.service';
 import { Inject } from '@nestjs/common';
 import { Page } from '../../../toolkit/pagination/page.type';
+import { DeleteDto } from '../../../toolkit/delete.dto';
 
 /**
  * DAO for Comment entity
@@ -43,7 +44,7 @@ export class ThreadRepoImpl implements ThreadRepo {
 	 */
 	public async findReplies(
 		slug: string,
-		numberOnBoard: number
+		numberOnBoard: bigint
 	): Promise<Comment[]> {
 		const parent = await this.findBySlugAndNumber(slug, numberOnBoard);
 
@@ -63,12 +64,12 @@ export class ThreadRepoImpl implements ThreadRepo {
 	 */
 	public async findBySlugAndNumber(
 		slug: string,
-		numberOnBoard: number
+		numberOnBoard: bigint
 	): Promise<Comment> {
 		return (await this.prisma.comment.findFirst({
 			where: {
 				boardSlug: slug,
-				numberOnBoard: BigInt(numberOnBoard)
+				numberOnBoard
 			}
 		})) as Comment;
 	}
@@ -81,6 +82,42 @@ export class ThreadRepoImpl implements ThreadRepo {
 		return (await this.prisma.comment.create({
 			data: { ...thread }
 		})) as Comment;
+	}
+
+	/**
+	 * Find last comment written from IP
+	 * @param ip Poster's IP
+	 */
+	public async findLastCommentByIp(ip: string): Promise<Comment> {
+		const lastDay = this.buildLowerTimeLimitDate(24).toISOString();
+
+		const postsFromIp = await this.prisma.comment.findMany({
+			where: { AND: [{ posterIp: ip }, { createdAt: { gte: lastDay } }] },
+			orderBy: { createdAt: 'desc' }
+		});
+
+		if (postsFromIp.length > 0) {
+			return postsFromIp[0];
+		}
+
+		return null;
+	}
+
+	/**
+	 * Find all comments created in the last N hours
+	 * @param hours Count of hours
+	 */
+	public async findCommentsPostedLastHours(
+		hours: number
+	): Promise<Comment[]> {
+		const lowerTimeLimit =
+			this.buildLowerTimeLimitDate(hours).toISOString();
+
+		return (await this.prisma.comment.findMany({
+			where: { createdAt: { gte: lowerTimeLimit } },
+			include: { parent: true },
+			orderBy: { createdAt: 'desc' }
+		})) as Comment[];
 	}
 
 	/**
@@ -138,6 +175,42 @@ export class ThreadRepoImpl implements ThreadRepo {
 				NOT: { file: null }
 			}
 		})) as number;
+	}
+
+	public async findById(id: string): Promise<Comment> {
+		return (await this.prisma.comment.findUnique({
+			where: { id }
+		})) as Comment;
+	}
+
+	/**
+	 * Get total comments count
+	 */
+	public async count(): Promise<number> {
+		return (await this.prisma.comment.count()) as number;
+	}
+
+	/**
+	 * Get count of unique posters in thread
+	 * @param id Count of hours
+	 */
+	public async getUniquePostersCountInThread(id: string): Promise<number> {
+		const ips = await this.prisma.comment.groupBy({
+			where: { OR: [{ id }, { parentId: id }] },
+			by: ['posterIp']
+		});
+
+		return ips.length;
+	}
+
+	/**
+	 * Fina all comments by IDs
+	 * @param ids Comments UUIDs
+	 */
+	public async findAllByIdIn(ids: string[]): Promise<Comment[]> {
+		return (await this.prisma.comment.findMany({
+			where: { id: { in: ids } }
+		})) as Comment[];
 	}
 
 	/**
@@ -227,5 +300,69 @@ export class ThreadRepoImpl implements ThreadRepo {
 				numberOnBoard: { in: numbersOnBoard }
 			}
 		});
+	}
+
+	/**
+	 * Get total count of comments on board
+	 * @param slug Board slug
+	 */
+	public async getTotalCommentsOnBoardCount(slug: string): Promise<number> {
+		return (await this.prisma.comment.count({
+			where: { boardSlug: slug }
+		})) as number;
+	}
+
+	/**
+	 * Get total count of files on board
+	 * @param slug Board slug
+	 */
+	public async getTotalFilesOnBoardCount(slug: string): Promise<number> {
+		return (await this.prisma.comment.count({
+			where: {
+				boardSlug: slug,
+				file: { not: null }
+			}
+		})) as number;
+	}
+
+	/**
+	 * Clear files in comments
+	 * @param files File list which should be cleared
+	 */
+	public async clearFilesIn(files: string[]): Promise<void> {
+		await this.prisma.comment.updateMany({
+			where: { file: { in: files } },
+			data: { file: null }
+		});
+	}
+
+	/**
+	 * Delete posts by IDs
+	 * @param dto Deletion DTO
+	 */
+	public async deletePostsByIds(dto: DeleteDto): Promise<void> {
+		await this.prisma.comment.deleteMany({
+			where: { id: { in: dto.ids } }
+		});
+	}
+
+	/**
+	 * Delete posts by parent ID
+	 * @param id parent UUID for posts
+	 */
+	public async deletePostsWhereParentId(id: string): Promise<void> {
+		await this.prisma.comment.deleteMany({
+			where: { parentId: id }
+		});
+	}
+
+	/**
+	 * Build lower time limit date
+	 * @param hours Last N hours
+	 */
+	private buildLowerTimeLimitDate(hours: number): Date {
+		const millisecondsHours = hours * 60 * 60 * 1000;
+		const resultTimeStamp = Date.now() - millisecondsHours;
+		return new Date(resultTimeStamp);
 	}
 }

@@ -1,0 +1,32 @@
+{{> head}}
+
+{{> navbar}}
+
+<div class='container mt-5'>
+
+	<form action='/megami/sign-in' method='post'>
+		<div class='mb-3'>
+			<input
+				type='email'
+				autocomplete='off'
+				id='signInEmail'
+				name='email'
+				placeholder="Email address"
+				class="form-control"
+			>
+		</div>
+		<div class='mb-3'>
+			<input
+				type='password'
+				autocomplete='off'
+				id='signInPassword'
+				name='password'
+				placeholder="Password"
+				class="form-control"
+			>
+			<button type="submit" class="btn btn-primary mt-3">Sign in</button>
+		</div>
+	</form>
+</div>
+
+{{> eof}}

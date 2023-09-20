@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
 	<div class="container">
-		<a class="navbar-brand mb-0 h1" href="/">Megami Image Board</a>
+		<a class="navbar-brand mb-0 h1" href="/">{{ siteLogo }}</a>
 		<button
 			class="navbar-toggler"
 			type="button"
@@ -18,15 +18,14 @@
 					<strong>Back to /{{ openingPost.boardSlug }}/</strong>
 				</a>
 				<a class="nav-link" href="/boards">Boards</a>
-				<a class="nav-link" href="#">Rules</a>
+				<a class="nav-link" href="/rules">Rules</a>
 				<a class="nav-link" href="/faq">FAQ</a>
-				<a class="nav-link" href="http://localhost:5050" target='_blank'>PgAdmin</a>
+				<a class="nav-link" href="/megami/home">Management</a>
 			</div>
 		</div>
 		<span class="navbar-text d-none d-lg-inline">
-			Views: <strong>...</strong>
 			Files: <strong>{{ filesCount }}</strong>
-			Posters: <strong>...</strong>
+			Posters: <strong>{{ postersCount }}</strong>
       	</span>
 	</div>
 </nav>

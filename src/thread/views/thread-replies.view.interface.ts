@@ -2,6 +2,7 @@ import { ThreadWithRepliesPage } from '../types/thread-with-replies-page.type';
 import { Response } from 'express';
 import { ThreadReplyCreateDto } from '../dto/thread-reply.create.dto';
 import { ThreadDeleteDto } from '../dto/thread.delete.dto';
+import { SessionDto } from '../../management/dto/session/session.dto';
 
 /**
  * View for thread replies
@@ -9,19 +10,21 @@ import { ThreadDeleteDto } from '../dto/thread.delete.dto';
 export interface ThreadRepliesView {
 	getThreadRepliesPage(
 		slug: string,
-		numberOnBoard: number
+		numberOnBoard: bigint,
+		session: SessionDto
 	): Promise<ThreadWithRepliesPage>;
 
 	createReply(
 		slug: string,
-		threadNumber: number,
+		threadNumber: bigint,
 		dto: ThreadReplyCreateDto,
+		ip: string,
 		res: Response
 	): Promise<void>;
 
 	deleteCommentsByPwd(
 		slug: string,
-		threadNumber: number,
+		threadNumber: bigint,
 		dto: ThreadDeleteDto,
 		res: Response
 	): Promise<void>;

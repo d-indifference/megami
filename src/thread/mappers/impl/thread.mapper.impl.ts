@@ -6,6 +6,10 @@ import { Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ThreadOpenPostDto } from 'src/thread/dto/thread-open-post.dto';
 import { ThreadReplyDto } from 'src/thread/dto/thread-reply.dto';
+import { ThreadModerationDto } from '../../dto/thread-moderation.dto';
+import { DateTime } from 'luxon';
+import { ThreadFileModerationDto } from '../../dto/thread-file-moderation.dto';
+import { clearSanitizeHtml } from '../../../toolkit/clear-sanitize-html.function';
 
 /**
  * Mapper for Thread entity
@@ -31,6 +35,8 @@ export class ThreadMapperImpl implements ThreadMapper {
 	public toOpenPostDto(entity: Comment): ThreadOpenPostDto {
 		const dto = new ThreadOpenPostDto();
 
+		dto.id = entity.id;
+		dto.posterIp = entity.posterIp;
 		dto.createdAt = entity.createdAt;
 		dto.boardSlug = entity.boardSlug;
 		dto.numberOnBoard = entity.numberOnBoard;
@@ -65,12 +71,13 @@ export class ThreadMapperImpl implements ThreadMapper {
 	 */
 	public create(slug: string, dto: ThreadCreateDto, file: string): Comment {
 		return {
+			posterIp: dto.posterIp,
 			boardSlug: slug,
-			email: dto.email,
-			name: dto.name,
-			subject: dto.subject,
-			comment: dto.comment,
-			password: dto.password,
+			email: clearSanitizeHtml(dto.email),
+			name: clearSanitizeHtml(dto.name),
+			subject: clearSanitizeHtml(dto.subject),
+			comment: clearSanitizeHtml(dto.comment),
+			password: clearSanitizeHtml(dto.password),
 			file
 		} as Comment;
 	}
@@ -96,6 +103,65 @@ export class ThreadMapperImpl implements ThreadMapper {
 
 		if (entity.subject) {
 			dto.subject = entity.subject;
+		}
+
+		if (entity.file) {
+			dto.file = `/${this.configService.get('MEGAMI_FILES_DIR')}${
+				entity.file
+			}`;
+		}
+
+		return dto;
+	}
+
+	/**
+	 * Map entity to moderation DTO
+	 * @param entity Comment entity
+	 */
+	public toModerationDto(entity: Comment): ThreadModerationDto {
+		const dto = new ThreadModerationDto();
+
+		dto.id = entity.id;
+		dto.file = entity.file;
+		dto.posterIp = entity.posterIp;
+		dto.subject = entity.subject;
+		dto.comment = entity.comment;
+		dto.createdAt = DateTime.fromJSDate(entity.createdAt).toFormat(
+			'dd.MM.yyyy HH:mm'
+		);
+
+		if (entity.parentId) {
+			dto.isThread = false;
+			dto.postLink = `/${entity.boardSlug}/res/${entity['parent'].numberOnBoard}#${entity.numberOnBoard}`;
+		} else {
+			dto.isThread = true;
+			dto.postLink = `/${entity.boardSlug}/res/${entity.numberOnBoard}`;
+		}
+
+		return dto;
+	}
+
+	/**
+	 * Map entity to file moderation DTO
+	 * @param entity Comment entity
+	 */
+	public toFileModerationDto(entity: Comment): ThreadFileModerationDto {
+		const dto = new ThreadFileModerationDto();
+
+		dto.id = entity.id;
+		dto.createdAt = DateTime.fromJSDate(entity.createdAt).toFormat(
+			'dd.MM.yyyy HH:mm'
+		);
+		dto.boardSlug = entity.boardSlug;
+		dto.file = entity.file;
+		dto.posterIp = entity.posterIp;
+
+		if (entity.parentId) {
+			dto.isThread = false;
+			dto.postLink = `/${entity.boardSlug}/res/${entity['parent'].numberOnBoard}#${entity.numberOnBoard}`;
+		} else {
+			dto.isThread = true;
+			dto.postLink = `/${entity.boardSlug}/res/${entity.numberOnBoard}`;
 		}
 
 		if (entity.file) {

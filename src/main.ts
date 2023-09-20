@@ -13,6 +13,15 @@ import * as cookieParser from 'cookie-parser';
 import { PrismaService } from './prisma.service';
 import { MigrationToolkitService } from './migrator/migration-toolkit.service';
 import { MigratorService } from './migrator/migrator.service';
+import * as session from 'express-session';
+import { sessionConfig } from './config/session.config';
+import { RootUserInitService } from './management/services/impl/root-user-init.service.impl';
+import { UnauthorizedExceptionFilter } from './exceptions/unauthorized-exception.filter';
+import { MethodNotAllowedExceptionFilter } from './exceptions/method-not-allowed-exception.filter';
+import { SiteSettingsService } from './site-settings/services/site-settings.service';
+import { eqHandlebarsHelper } from './handlebars/eq.handlebars.helper';
+import { IpListsFileService } from './moderation/services/ip-lists-file.service';
+import { ForbiddenExceptionFilter } from './exceptions/forbidden-exception.filter';
 
 let internalPort = 3000;
 
@@ -25,6 +34,9 @@ const bootstrap = async () => {
 	const configService = app.get(ConfigService);
 	const migrationToolkit = app.get(MigrationToolkitService);
 	const migrator = app.get(MigratorService);
+	const rootUserInitService = app.get(RootUserInitService);
+	const siteSettingsService = app.get(SiteSettingsService);
+	const ipListsFileService = app.get(IpListsFileService);
 
 	internalPort = configService.get('MEGAMI_INTERNAL_PORT');
 
@@ -48,29 +60,41 @@ const bootstrap = async () => {
 		app.useStaticAssets(
 			path.join(
 				__dirname,
-				'../..',
+				'..',
 				configService.get('MEGAMI_ASSETS_PUBLIC_DIR')
 			)
 		);
-		app.setBaseViewsDir(path.join(__dirname, '../..', viewsDir));
+		app.setBaseViewsDir(path.join(__dirname, '..', viewsDir));
 
 		hbs.registerPartials(
-			path.join(__dirname, '../..', `${viewsDir}/partials`)
+			path.join(__dirname, '..', `${viewsDir}/partials`)
 		);
 		hbs.registerHelper('compare', compareHandlebarsHelper);
 		hbs.registerHelper('calc', mathHandlebarsHelper);
+		hbs.registerHelper('eq', eqHandlebarsHelper);
 		app.setViewEngine('hbs');
 
 		app.useGlobalFilters(new NotFoundExceptionFilter());
 		app.useGlobalFilters(new InternalServerErrorExceptionFilter());
+		app.useGlobalFilters(new UnauthorizedExceptionFilter());
+		app.useGlobalFilters(new MethodNotAllowedExceptionFilter());
+		app.useGlobalFilters(new ForbiddenExceptionFilter());
 
 		app.use(cookieParser());
+		app.use(session(sessionConfig(configService)));
+
+		await rootUserInitService.initRootUser();
+
+		await siteSettingsService.createSiteSettings();
+
+		await ipListsFileService.createIpListsFileIfNotExists();
 
 		await app.listen(internalPort);
 	}
 };
 
 bootstrap().then(() => {
+	Logger.log('ｷﾀ━━━(ﾟ∀ﾟ)━━━!!', 'main');
 	Logger.log(
 		`🚀 Server is started on http://localhost:${internalPort}/`,
 		'main'

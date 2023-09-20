@@ -10,15 +10,15 @@
 			<div class="card custom-masonry__card mb-3">
 				<img src="{{ this.file }}" class="card-img-top" alt="Thread image">
 				<div class="card-body">
-					<h5 class="card-title">{{ this.subject }}</h5>
-					<p class="card-text custom-blockquote">{{ this.comment }}</p>
+					<h5 class="card-title">{{{ this.subject }}}</h5>
+					<p class="card-text custom-blockquote custom-collapsable">{{{ this.comment }}}</p>
 					<div class='custom-card-bottom'>
 						<a href="/{{ this.boardSlug }}/res/{{ this.numberOnBoard }}" class="btn btn-secondary">
 							View Thread
 						</a>
-						<div>
-							<span class='icon-comment'></span>{{ this.repliesTotal }}
-							<span class='icon-image'></span>{{ this.repliesWithFiles }}
+						<div title='Total replies count and replies with attached files'>
+							<span class='icon-comment'></span>&nbsp;{{ this.repliesTotal }}&nbsp;
+							<span class='icon-image'></span>&nbsp;{{ this.repliesWithFiles }}
 						</div>
 					</div>
 				</div>
@@ -29,15 +29,7 @@
 	{{{ paginatorTemplate }}}
 
 	<div>
-		[
-		<a href='#'>d</a>
-		]
-		[
-		<a href='#'>b</a> /
-		<a href='#'>vg</a> /
-		<a href='#'>a</a> /
-		<a href='#'>po</a>
-		]
+		{{{ boardBottomLinks }}}
 	</div>
 </div>
 

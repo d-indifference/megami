@@ -3,7 +3,11 @@ import { ThreadCreateDto } from '../../dto/thread.create.dto';
 import { CreationResultDto } from '../../../toolkit/creation-result.dto';
 import { saveFileToPermanentStorage } from '../../../toolkit/save-file-to-permanent-storage.function';
 import { ConfigService } from '@nestjs/config';
-import { Inject } from '@nestjs/common';
+import {
+	BadRequestException,
+	Inject,
+	MethodNotAllowedException
+} from '@nestjs/common';
 import { BoardRepo } from '../../../board/repo/board.repo.interface';
 import { ThreadMapper } from '../../mappers/thread.mapper.interface';
 import { ThreadRepo } from '../../repo/thread.repo.interface';
@@ -12,6 +16,11 @@ import { ThreadReplyCreateDto } from 'src/thread/dto/thread-reply.create.dto';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import * as process from 'process';
+import { SiteSettingsService } from '../../../site-settings/services/site-settings.service';
+import { LOG } from '../../../toolkit';
+import { DeleteDto } from '../../../toolkit/delete.dto';
+import { BanPolicyService } from '../../../ban/ban-policy.service';
+import { MarkdownService } from '../../services/markdown.service';
 
 /**
  * Commands for threads
@@ -25,7 +34,13 @@ export class ThreadCommandsImpl implements ThreadCommands {
 		@Inject(ThreadMapper)
 		private readonly threadMapper: ThreadMapper,
 		@Inject(ThreadRepo)
-		private readonly threadRepo: ThreadRepo
+		private readonly threadRepo: ThreadRepo,
+		@Inject(SiteSettingsService)
+		private readonly siteSettingsService: SiteSettingsService,
+		@Inject(BanPolicyService)
+		private readonly banService: BanPolicyService,
+		@Inject(MarkdownService)
+		private readonly markdownService: MarkdownService
 	) {}
 
 	/**
@@ -36,10 +51,27 @@ export class ThreadCommandsImpl implements ThreadCommands {
 	 */
 	public async createThreadReply(
 		slug: string,
-		parentNumber: number,
+		parentNumber: bigint,
 		dto: ThreadReplyCreateDto
 	): Promise<CreationResultDto<string>> {
-		const BUMP_LIMIT = 5;
+		LOG.log(
+			this,
+			`create thread reply, parentNumber=${parentNumber}, slug=${slug}`,
+			dto
+		);
+
+		await this.banService.applyBanPolicy(dto.posterIp);
+
+		await this.applyDelayPolicy(
+			dto.posterIp,
+			(
+				await this.siteSettingsService.getSiteSettings()
+			).threadReplyDelay,
+			'reply in threads'
+		);
+
+		const bumpLimit = (await this.siteSettingsService.getSiteSettings())
+			.bumpLimit;
 
 		let savedFilePath = null;
 
@@ -55,6 +87,17 @@ export class ThreadCommandsImpl implements ThreadCommands {
 
 		const reply = this.threadMapper.create(slug, dto, savedFilePath);
 
+		reply.comment = await this.markdownService.processMarkdown(
+			reply.comment,
+			reply.boardSlug
+		);
+
+		if (reply.comment.length < 3) {
+			throw new BadRequestException(
+				'Please write a normal comment without forbidden markdown'
+			);
+		}
+
 		const parent = await this.threadRepo.findBySlugAndNumber(
 			slug,
 			parentNumber
@@ -66,7 +109,7 @@ export class ThreadCommandsImpl implements ThreadCommands {
 			parent.id
 		);
 
-		if (!dto.dontHit && currentPostsInThread <= BUMP_LIMIT) {
+		if (!dto.dontHit && currentPostsInThread <= bumpLimit) {
 			parent.lastHit = new Date();
 		}
 
@@ -79,6 +122,8 @@ export class ThreadCommandsImpl implements ThreadCommands {
 		await this.threadRepo.update(parent);
 
 		await this.boardRepo.incrementLastPost(slug);
+
+		LOG.log(this, 'new reply created', { id: newReply.id });
 
 		return new CreationResultDto<string>(
 			`/${slug}/res/${parentNumber}#${newReply.numberOnBoard}`
@@ -94,6 +139,18 @@ export class ThreadCommandsImpl implements ThreadCommands {
 		slug: string,
 		dto: ThreadCreateDto
 	): Promise<CreationResultDto<string>> {
+		LOG.log(this, `create thread , slug=${slug}`, dto);
+
+		await this.banService.applyBanPolicy(dto.posterIp);
+
+		await this.applyDelayPolicy(
+			dto.posterIp,
+			(
+				await this.siteSettingsService.getSiteSettings()
+			).threadCreationDelay,
+			'create threads'
+		);
+
 		const savedFilePath = await saveFileToPermanentStorage(
 			this.configService,
 			slug,
@@ -101,6 +158,17 @@ export class ThreadCommandsImpl implements ThreadCommands {
 		);
 
 		const thread = this.threadMapper.create(slug, dto, savedFilePath);
+
+		if (thread.comment.length < 3) {
+			throw new BadRequestException(
+				'Please write a normal comment without forbidden markdown'
+			);
+		}
+
+		thread.comment = await this.markdownService.processMarkdown(
+			thread.comment,
+			thread.boardSlug
+		);
 
 		const board = await this.boardRepo.findBySlug(slug);
 
@@ -114,6 +182,8 @@ export class ThreadCommandsImpl implements ThreadCommands {
 		const newThread = await this.threadRepo.create(thread);
 
 		await this.boardRepo.incrementLastPost(slug);
+
+		LOG.log(this, 'new thread created', { id: newThread.id });
 
 		return new CreationResultDto<string>(`${newThread.numberOnBoard}`);
 	}
@@ -129,6 +199,12 @@ export class ThreadCommandsImpl implements ThreadCommands {
 		threadNumbers: bigint[],
 		password: string
 	): Promise<void> {
+		LOG.log(this, 'delete comments by password', {
+			slug,
+			threadNumbers,
+			password
+		});
+
 		for (const commentId of threadNumbers) {
 			await this.threadRepo.deleteCommentByPassword(
 				slug,
@@ -136,6 +212,55 @@ export class ThreadCommandsImpl implements ThreadCommands {
 				password
 			);
 		}
+
+		LOG.log(this, 'comments was deleted');
+	}
+
+	/**
+	 * Delete comments by UUIDs
+	 * @param dto Delete DTO
+	 */
+	public async deleteCommentsByIds(dto: DeleteDto): Promise<void> {
+		LOG.log(this, 'delete comments by ids', dto);
+
+		const deleteCandidates = await this.threadRepo.findAllByIdIn(dto.ids);
+
+		for (const candidate of deleteCandidates) {
+			if (!candidate.parentId) {
+				LOG.log(this, `delete thread, id=${candidate.id}`);
+
+				LOG.log(this, 'finding thread replies...');
+
+				const repliesOfDeleteCandidate =
+					await this.threadRepo.findReplies(
+						candidate.boardSlug,
+						candidate.numberOnBoard
+					);
+
+				for (const reply of repliesOfDeleteCandidate) {
+					LOG.log(this, 'reply found', {
+						id: reply.id,
+						parentId: reply.parentId
+					});
+
+					if (reply.file) {
+						await this.deleteFileFromDisk(reply.file);
+					}
+				}
+
+				await this.threadRepo.deletePostsWhereParentId(candidate.id);
+
+				LOG.log(this, 'replies deleted');
+			}
+
+			if (candidate.file) {
+				await this.deleteFileFromDisk(candidate.file);
+			}
+		}
+
+		await this.threadRepo.deletePostsByIds(dto);
+
+		LOG.log(this, 'comments deleted');
 	}
 
 	/**
@@ -149,9 +274,27 @@ export class ThreadCommandsImpl implements ThreadCommands {
 		threadNumbers: bigint[],
 		password: string
 	): Promise<void> {
+		LOG.log(this, `clear files by password, password=${password}`, {
+			threadNumbers
+		});
+
 		await this.threadRepo.clearFilesByPwd(slug, threadNumbers, password);
 
 		await this.removeFilesByPwd(slug, threadNumbers, password);
+	}
+
+	/**
+	 * Clear files set in list from comments
+	 * @param files File which should be cleared from comments
+	 */
+	public async clearFilesIn(files: string[]): Promise<void> {
+		LOG.log(this, 'clear files in list', {
+			files
+		});
+
+		await this.threadRepo.clearFilesIn(files);
+
+		LOG.log(this, 'files was cleared');
 	}
 
 	/**
@@ -165,6 +308,11 @@ export class ThreadCommandsImpl implements ThreadCommands {
 		threadNumbers: bigint[],
 		password: string
 	): Promise<void> {
+		LOG.log(this, 'remove files by password', {
+			threadNumbers,
+			password
+		});
+
 		const candidates =
 			await this.threadRepo.findCommentsWithFileDeletionCandidates(
 				slug,
@@ -175,14 +323,75 @@ export class ThreadCommandsImpl implements ThreadCommands {
 		const files = candidates.map(candidate => candidate.file);
 
 		for (const file of files) {
-			await fs.unlink(
-				path.join(
-					process.cwd(),
-					this.configService.get('MEGAMI_ASSETS_PUBLIC_DIR'),
-					this.configService.get('MEGAMI_FILES_DIR'),
-					file
-				)
+			const unlinkCandidatePath = path.join(
+				process.cwd(),
+				this.configService.get('MEGAMI_ASSETS_PUBLIC_DIR'),
+				this.configService.get('MEGAMI_FILES_DIR'),
+				file
 			);
+
+			LOG.log(this, 'unlink file...', {
+				unlinkCandidatePath
+			});
+
+			await fs.unlink(unlinkCandidatePath);
+
+			LOG.log(this, 'file unlinked', {
+				unlinkCandidatePath
+			});
 		}
+	}
+
+	/**
+	 * Apply delay policy
+	 * @param ip Poster's IP
+	 * @param secondsDelay Number of seconds, how long the delay between actions should last
+	 * @param messagePart Part of message which should be displayed on error page
+	 */
+	private async applyDelayPolicy(
+		ip: string,
+		secondsDelay: number,
+		messagePart: string
+	) {
+		const millisecondsDelay = secondsDelay * 1000;
+		const lastPost = await this.threadRepo.findLastCommentByIp(ip);
+
+		if (lastPost) {
+			const lastPostDate = lastPost.createdAt.valueOf();
+			const currentDate = new Date().valueOf();
+
+			if (currentDate - lastPostDate <= millisecondsDelay) {
+				LOG.log(
+					this,
+					'comment creation rejected, delay policy applied',
+					{
+						ip
+					}
+				);
+
+				throw new MethodNotAllowedException(
+					`You can ${messagePart} every ${secondsDelay} seconds`
+				);
+			}
+		}
+	}
+
+	/**
+	 * Delete files form disk
+	 * @param file Path to file with board slug
+	 */
+	private async deleteFileFromDisk(file: string): Promise<void> {
+		LOG.log(this, 'unlink file', { file });
+
+		const pathToFile = path.join(
+			process.cwd(),
+			this.configService.get('MEGAMI_ASSETS_PUBLIC_DIR'),
+			this.configService.get('MEGAMI_FILES_DIR'),
+			file
+		);
+
+		await fs.unlink(pathToFile);
+
+		LOG.log(this, 'unlinked file', { file });
 	}
 }

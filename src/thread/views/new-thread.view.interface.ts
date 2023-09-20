@@ -11,6 +11,7 @@ export interface NewThreadView {
 	createThread(
 		slug: string,
 		dto: ThreadCreateDto,
+		ip: string,
 		res: Response
 	): Promise<void>;
 }

@@ -1,0 +1,86 @@
+{{> head}}
+
+{{> admin_nav }}
+
+<div class='container-fluid mt-3'>
+
+	{{> admin_offcanvas }}
+
+	<div class='row mt-3 mt-lg-0'>
+		<div class='col-lg-3 d-lg-block d-none'>
+			{{> admin_menu}}
+		</div>
+		<div class='col'>
+
+			<h2 class='mb-3'>Files in directory /{{ pathToUploads.boardDir }}/</h2>
+
+			<a href='/megami/disk' class='btn btn-outline-secondary mb-1'>Go to Files</a>
+
+			<hr>
+
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item">
+						{{ pathToUploads.public }}
+					</li>
+					<li class="breadcrumb-item">
+						<a href='/megami/disk'>{{ pathToUploads.files }}</a>
+					</li>
+					<li class="breadcrumb-item active" aria-current="page">
+						<span class='icon-folder-open'></span>&nbsp;
+						{{ pathToUploads.boardDir }}
+					</li>
+				</ol>
+			</nav>
+
+			<button class='btn btn-danger' type='submit' form='deleteFromDiskForm'>Delete selected files</button>
+
+			<form action='/megami/disk/{{ pathToUploads.boardDir }}/delete' method='post' id='deleteFromDiskForm'>
+				<table class='table table-striped mt-3 mb-3'>
+					<thead>
+					<tr>
+						<th scope='col'>#</th>
+						<th scope='col'></th>
+						<th scope='col'>Preview</th>
+						<th scope='col'>File</th>
+						<th scope='col'>Uploaded at (server TZ)</th>
+						<th scope='col'>Size</th>
+					</tr>
+					</thead>
+					<tbody>
+					{{# each uploadedFiles}}
+						<tr>
+							<th scope='row'>{{@index}}</th>
+							<td>
+								<input
+									type='checkbox'
+									name='filesForDelete'
+									value='{{ this.fileInDbName }}'
+									class='form-check-input'
+								>
+							</td>
+							<td>
+								<a href='{{ this.name }}' target='_blank'>
+									<img src="{{ this.name }}" class="img-thumbnail" alt="{{ this.displayName }}" width='75'>
+								</a>
+							</td>
+							<td>
+								<a href='{{ this.name }}' target='_blank'>{{ this.displayName }}</a>
+							</td>
+							<td>{{ this.createdAt }}</td>
+							<td>{{ this.size }}</td>
+						</tr>
+					{{/ each }}
+					</tbody>
+				</table>
+
+				<button class='btn btn-danger' type='submit'>Delete selected files</button>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+<script src='/js/megami-dashboard.js'></script>
+
+{{> eof}}

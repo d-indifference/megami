@@ -5,36 +5,23 @@
 <div class='container'>
 	<hr>
 	<div class='text-center'>
-		<h1>Megami Image Board</h1>
-		<em>Modern image board engine</em>
+		<h1>{{ siteLogo }}</h1>
+		<em>{{ slogan }}</em>
 
 		<div class="list-group list-group-horizontal mt-4">
 			<a href="/boards" class="list-group-item list-group-item-action">Boards</a>
 			<a href="/faq" class="list-group-item list-group-item-action">FAQ</a>
-			<a href="#" class="list-group-item list-group-item-action">Rules</a>
+			<a href="/rules" class="list-group-item list-group-item-action">Rules</a>
 		</div>
 	</div>
 	<hr>
 
 	<div class='row'>
 		<div class='col-md-3'>
-			<img src="/img/logo-512.png" class="img-thumbnail custom-logo-img" alt="Logo">
+			<img src="{{ mainLogo }}" class="img-thumbnail custom-logo-img" alt="Logo">
 		</div>
 		<div class='col-md-9'>
-			<p>
-				Welcome to Megami! Our website is an imageboard - one of the specific online forums where registration is not mandatory,
-				and you can easily attach graphic files to your posts.
-				The site primarily focuses on topics related to anime, manga, and other aspects of
-				Japanese pop culture, but there are also sections dedicated to other subjects.
-				Additionally, topics that don't have a
-				dedicated thematic section can be discussed on the <a href='/b'>/b/</a> board.
-			</p>
-			<p>
-				Since the website is built on the principle of user-generated content,
-				its appearance entirely depends on them. Our community aims to foster a high
-				standard of communication. We hope that visitors to our website will be polite
-				and engaging conversationalists, choosing substantive discussions over senseless arguments.
-			</p>
+			{{{ description }}}
 		</div>
 	</div>
 	<hr>

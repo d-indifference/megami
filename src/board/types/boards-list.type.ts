@@ -10,6 +10,11 @@ export type BoardsList = {
 	title: string;
 
 	/**
+	 * Site logo
+	 */
+	siteLogo: string;
+
+	/**
 	 * Boards
 	 */
 	boards: BoardDto[];

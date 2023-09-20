@@ -6,7 +6,10 @@ import {
 	Param,
 	Post,
 	Render,
-	Res
+	Res,
+	Session,
+	UsePipes,
+	ValidationPipe
 } from '@nestjs/common';
 import { ThreadsView } from '../board/views/threads.view.interface';
 import { BoardPage } from '../board/types/board-page.type';
@@ -19,6 +22,8 @@ import { ThreadRepliesView } from './views/thread-replies.view.interface';
 import { ThreadReplyCreateDto } from './dto/thread-reply.create.dto';
 import { ThreadWithRepliesPage } from './types/thread-with-replies-page.type';
 import { ThreadDeleteDto } from './dto/thread.delete.dto';
+import { RealIP } from 'nestjs-real-ip';
+import { SessionDto } from '../management/dto/session/session.dto';
 
 /**
  * Controller for threads
@@ -49,13 +54,15 @@ export class ThreadController {
 	 * Post thread creation
 	 */
 	@Post('new-thread')
+	@UsePipes(new ValidationPipe({ transform: true }))
 	@FormDataRequest()
 	public async createNewThread(
 		@Param('board') slug: string,
 		@Body() dto: ThreadCreateDto,
+		@RealIP() ip: string,
 		@Res() res: Response
 	): Promise<void> {
-		await this.newThreadView.createThread(slug, dto, res);
+		await this.newThreadView.createThread(slug, dto, ip, res);
 	}
 
 	/**
@@ -65,11 +72,13 @@ export class ThreadController {
 	@Render('thread')
 	public async getThread(
 		@Param('board') board: string,
-		@Param('threadNumber') threadNumber: number
+		@Param('threadNumber') threadNumber: number,
+		@Session() session: SessionDto
 	): Promise<ThreadWithRepliesPage> {
 		return await this.threadRepliesView.getThreadRepliesPage(
 			board,
-			Number(threadNumber)
+			BigInt(threadNumber),
+			session
 		);
 	}
 
@@ -77,20 +86,29 @@ export class ThreadController {
 	 * Create thread reply
 	 */
 	@Post('res/:threadNumber')
+	@UsePipes(new ValidationPipe({ transform: true }))
 	@FormDataRequest()
 	public async replyToThread(
 		@Param('board') slug: string,
 		@Param('threadNumber') threadNumber: number,
 		@Body() dto: ThreadReplyCreateDto,
+		@RealIP() ip: string,
 		@Res() res: Response
 	): Promise<void> {
-		await this.threadRepliesView.createReply(slug, threadNumber, dto, res);
+		await this.threadRepliesView.createReply(
+			slug,
+			BigInt(threadNumber),
+			dto,
+			ip,
+			res
+		);
 	}
 
 	/**
 	 * Delete comments
 	 */
 	@Post('res/:threadNumber/delete')
+	@UsePipes(new ValidationPipe({ transform: true }))
 	@FormDataRequest()
 	public async deleteComments(
 		@Param('board') slug: string,
@@ -100,7 +118,7 @@ export class ThreadController {
 	): Promise<void> {
 		await this.threadRepliesView.deleteCommentsByPwd(
 			slug,
-			threadNumber,
+			BigInt(threadNumber),
 			dto,
 			res
 		);

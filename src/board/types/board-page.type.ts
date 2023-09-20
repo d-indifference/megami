@@ -12,6 +12,11 @@ export type BoardPage = {
 	title: string;
 
 	/**
+	 * Site logo
+	 */
+	siteLogo: string;
+
+	/**
 	 * Current Board Info
 	 */
 	board: BoardDto;
@@ -20,4 +25,9 @@ export type BoardPage = {
 	 * Pageable list with threads
 	 */
 	threads: Page<ThreadItemDto>;
+
+	/**
+	 * Board bottom links
+	 */
+	boardBottomLinks: string;
 };

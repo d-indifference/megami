@@ -1,0 +1,60 @@
+{{> head}}
+
+{{> admin_nav }}
+
+<div class='container-fluid mt-3'>
+
+	{{> admin_offcanvas }}
+
+	<div class='row mt-3 mt-lg-0'>
+		<div class='col-lg-3 d-lg-block d-none'>
+			{{> admin_menu}}
+		</div>
+		<div class='col'>
+
+			<h2 class='mb-3'>Boards</h2>
+			
+			<p class='text-start'>
+				<a href='/megami/boards/edit' class='btn btn-outline-secondary'>Create new board</a>
+			</p>
+
+			<table class="table table-striped">
+				<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">URL</th>
+					<th scope="col">Name</th>
+					<th scope="col">Total posts</th>
+					<th scope="col">Total files</th>
+					<th scope="col"></th>
+				</tr>
+				</thead>
+				<tbody>
+					{{# each boards }}
+						<tr>
+							<th scope="row">{{@index}}</th>
+							<td><a href='/{{ this.slug }}' target='_blank'>
+								/{{ this.slug }}/
+								<span class='icon-up-right-from-square text-secondary'></span>
+							</a></td>
+							<td>{{ this.name }}</td>
+							<td>{{ this.commentsCount }}</td>
+							<td>{{ this.filesCount }}</td>
+							<td>
+								<a
+									href='/megami/boards/edit/{{ this.id }}'
+									class='btn btn-outline-secondary'
+								>Edit</a>
+							</td>
+						</tr>
+					{{/each}}
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+</div>
+
+<script src='/js/megami-dashboard.js'></script>
+
+{{> eof}}

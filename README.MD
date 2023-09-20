@@ -13,16 +13,15 @@ but we have just begun development, and you have every opportunity to
 follow it through to the final release :).
 
 ### Planned features
-
-* Admin panel.
-* Huge text collapsing.
 * Advanced capabilities and settings for creating and managing boards through the admin panel.
 * Dark theme.
-* Moderation system.
 * REST API.
 * Capability to attach various types of files.
 * Tread catalogs and gallery.
+
+### Planned features in next update
 * Rich markdown
+* Hidden boards
 
 ## What does it contain?
 We offer to assemble an imageboard based on multiple Docker containers, 
@@ -105,7 +104,7 @@ $ exit
 
 ## Project environment variables
 * `MEGAMI_INTERNAL_PORT` - internal port for `megami-backend` docker container or main port of your application if you will run it without Docker.
-* `MEGAMI_EXTTERNAL_PORT` - external port for `megami-backend` docker container. If you run the app by Docker, you should go to this port to start your application.
+* `MEGAMI_EXTERNAL_PORT` - external port for `megami-backend` docker container. If you run the app by Docker, you should go to this port to start your application.
 * `MEGAMI_VOLUMES_DIR` - directory name for Postgres and PgAdmin volumes if you run the app by Docker.
 * `MEGAMI_APP_VOLUME` - application volume path for Docker.
 * `MEGAMI_POSTGRES_VOLUME` - path to Postgres volume.
@@ -114,6 +113,12 @@ $ exit
 * `MEGAMI_ASSETS_VIEWS_DIR` - path to directory with handlebars views.
 * `MEGAMI_FILES_DIR` - name of directory, where application stores uploaded files
 * `MEGAMI_SKIP_DB_MIGRATION` - set it `true` if you want to skip database migration during application starting.
+* `MEGAMI_SESSION_SECRET` - session secret key.
+* `MEGAMI_PRIVATE_KEY` - secret key for passwords.
+* `MEGAMI_ROOT_USER_EMAIL` - root user email for admin user created by default at first time.
+* `MEGAMI_ROOT_USER_PASSWORD` - root user password for admin user created by default at first time.
+* `MEGAMI_SKIP_ROOT_USER_CREATION` - set it `true` if you want to skip root user creation during application starting.
+* `MEGAMI_SQL_CONSOLE_PASSWORD` - SQL console password. Without it you cannot use SQL console.
 * `POSTGRES_HOST` - Postgres host.
 * `POSTGRES_PORT` - Postgres port.
 * `POSTGRES_USER` - Postgres username.

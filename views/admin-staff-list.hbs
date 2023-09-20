@@ -1,0 +1,55 @@
+{{> head}}
+
+{{> admin_nav }}
+
+<div class='container-fluid mt-3'>
+
+	{{> admin_offcanvas }}
+
+	<div class='row mt-3 mt-lg-0'>
+		<div class='col-lg-3 d-lg-block d-none'>
+			{{> admin_menu}}
+		</div>
+		<div class='col'>
+
+			<h2 class='mb-3'>Administration staff list</h2>
+
+			<a href='/megami/staff/edit' class='btn btn-outline-secondary mb-3'>
+				Add new administration member
+			</a>
+
+			<table class='table table-striped'>
+				<thead>
+				<tr>
+					<th scope='col'>#</th>
+					<th scope='col'>Email</th>
+					<th scope='col'>Role</th>
+					<th scope='col'></th>
+				</tr>
+				</thead>
+				<tbody>
+				{{# each users}}
+					<tr>
+						<th scope='row'>{{@index}}</th>
+						<td><a href='/megami/staff/edit/{{ this.id }}'>{{ this.email }}</a></td>
+						<td>
+							{{# if (eq this.role "ADMIN") }}
+								<span class="badge bg-primary">{{ this.role }}</span>
+							{{/ if }}
+							{{# if (eq this.role "MODERATOR") }}
+								<span class="badge bg-secondary">{{ this.role }}</span>
+							{{/ if }}
+						</td>
+						<td><a href='/megami/staff/edit/{{ this.id }}' class='btn btn-outline-secondary'>Edit</a></td>
+					</tr>
+				{{/each}}
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+</div>
+
+<script src='/js/megami-dashboard.js'></script>
+
+{{> eof}}

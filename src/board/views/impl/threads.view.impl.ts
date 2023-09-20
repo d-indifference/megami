@@ -4,6 +4,8 @@ import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { BoardQueries } from '../../queries/board.queries.interface';
 import { ThreadQueries } from '../../../thread/queries/thread.queries.interface';
 import { makePaginatorTemplate } from '../../../toolkit/pagination/make-paginator-template.function';
+import { SiteSettingsService } from '../../../site-settings/services/site-settings.service';
+import { LOG } from '../../../toolkit';
 
 /**
  * View for thread list page
@@ -13,7 +15,9 @@ export class ThreadsViewImpl implements ThreadsView {
 		@Inject(BoardQueries)
 		private readonly boardQueries: BoardQueries,
 		@Inject(ThreadQueries)
-		private readonly threadQueries: ThreadQueries
+		private readonly threadQueries: ThreadQueries,
+		@Inject(SiteSettingsService)
+		private readonly siteSettingsServices: SiteSettingsService
 	) {}
 
 	/**
@@ -22,6 +26,8 @@ export class ThreadsViewImpl implements ThreadsView {
 	 * @param page Page number for thread list
 	 */
 	public async getBoardPage(slug: string, page = 0): Promise<BoardPage> {
+		LOG.log(this, 'get board page', { slug, page });
+
 		if (page < 0) {
 			throw new BadRequestException('Page should be a positive number!');
 		}
@@ -35,10 +41,13 @@ export class ThreadsViewImpl implements ThreadsView {
 		}
 
 		return {
-			title: `${board.name} — Megami Image Board`,
+			title: await this.siteSettingsServices.buildTitle(board.name),
+			siteLogo: await this.siteSettingsServices.getTitle(),
 			board,
 			threads,
-			paginatorTemplate: makePaginatorTemplate(threads)
+			paginatorTemplate: makePaginatorTemplate(threads),
+			boardBottomLinks:
+				await this.siteSettingsServices.getBoardBottomLinks()
 		} as BoardPage;
 	}
 }

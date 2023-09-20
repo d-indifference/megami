@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// User Role
+enum UserRole {
+  ADMIN
+  MODERATOR
+}
+
 // Board
 model Board {
   id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -19,6 +25,7 @@ model Board {
 // Comment
 model Comment {
   id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  posterIp      String    @db.VarChar(64)
   createdAt     DateTime  @default(now())
   boardSlug     String    @db.VarChar(32)
   numberOnBoard BigInt
@@ -32,4 +39,24 @@ model Comment {
   parent        Comment?  @relation("RepliesForThread", fields: [parentId], references: [id])
   children      Comment[] @relation("RepliesForThread")
   lastHit       DateTime?
+}
+
+// User
+model User {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email             String   @unique @db.VarChar(256)
+  encryptedPassword String   @db.VarChar(256)
+  role              UserRole
+  bans              Ban[]    @relation("WhoBanned")
+}
+
+// Ban
+model Ban {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now())
+  banTill   DateTime
+  adminId   String?  @db.Uuid
+  admin     User?    @relation("WhoBanned", fields: [adminId], references: [id])
+  ip        String   @db.VarChar(64)
+  reason    String?  @db.Text
 }

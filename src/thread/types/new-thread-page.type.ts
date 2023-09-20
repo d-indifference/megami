@@ -10,6 +10,11 @@ export type NewThreadPage = {
 	title: string;
 
 	/**
+	 * Site logo
+	 */
+	siteLogo: string;
+
+	/**
 	 * Board DTO
 	 */
 	board: BoardDto;

@@ -1,0 +1,62 @@
+{{> head}}
+
+{{> admin_nav }}
+
+<div class='container-fluid mt-3'>
+
+	{{> admin_offcanvas }}
+
+	<div class='row mt-3 mt-lg-0'>
+		<div class='col-lg-3 d-lg-block d-none'>
+			{{> admin_menu}}
+		</div>
+		<div class='col'>
+
+			<h2 class='mb-3'>Disk space used</h2>
+
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item">
+						{{ pathToUploads.public }}
+					</li>
+					<li class="breadcrumb-item active" aria-current="page">
+						<span class='icon-folder-open'></span>&nbsp;
+						{{ pathToUploads.files }}
+					</li>
+				</ol>
+			</nav>
+
+			<table class='table table-striped'>
+				<thead>
+					<tr>
+						<th scope='col'></th>
+						<th scope='col'>Board</th>
+						<th scope='col'>Files</th>
+						<th scope='col'>Total size</th>
+					</tr>
+				</thead>
+				<tbody>
+				{{# each boardStats }}
+					<tr>
+						<th scope='row'><span class='icon-folder text-secondary'></span></th>
+						<td><a href='/megami/disk/{{ this.slug }}'>/{{ this.slug }}/</a></td>
+						<td>{{ totalFiles }}</td>
+						<td>{{ this.totalSize }}</td>
+					</tr>
+				{{/ each }}
+				<tr>
+					<th scope='row'>Total:</th>
+					<td></td>
+					<td>{{ totalStat.totalFiles }}</td>
+					<td>{{ totalStat.totalSize }}</td>
+				</tr>
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+</div>
+
+<script src='/js/megami-dashboard.js'></script>
+
+{{> eof}}

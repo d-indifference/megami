@@ -1,0 +1,93 @@
+{{> head}}
+
+{{> admin_nav }}
+
+<div class='container-fluid mt-3'>
+
+	{{> admin_offcanvas }}
+
+	<div class='row mt-3 mt-lg-0'>
+		<div class='col-lg-3 d-lg-block d-none'>
+			{{> admin_menu}}
+		</div>
+		<div class='col'>
+
+			<h2 class='mb-3'>Recent posts</h2>
+
+			<h4 class='mb-3'>Comments from the previous 24 hours</h4>
+
+			<form action='/megami/moderation/delete-posts' method='post' id='moderationDeletePostsForm'>
+				<button type='submit' class='btn btn-danger mb-3'>Delete selected posts</button>
+
+				<table class='table table-striped'>
+					<thead>
+					<tr>
+						<th scope='col'>#</th>
+						<th scope='col'></th>
+						<th scope='col'>File</th>
+						<th scope='col'>IP</th>
+						<th scope='col'>Subject</th>
+						<th scope='col'>Comment</th>
+						<th scope='col'>Created at (server TZ)</th>
+						<th scope='col'>Go to post</th>
+						<th scope='col'></th>
+					</tr>
+					</thead>
+					<tbody>
+					{{# each recentPosts }}
+						<tr>
+							<th scope='row'>{{@index}}</th>
+							<td>
+								<input
+									type='checkbox'
+									name='ids'
+									value='{{ this.id }}'
+									class="form-check-input"
+									id="deletePostAdmin"
+								>
+							</td>
+							<td>
+								{{# if this.file }}
+									<a href='/files/{{ this.file }}' target='_blank'>
+										<img src="/files/{{ this.file }}" class="img-thumbnail" alt="{{ this.file }}" width='75'>
+									</a>
+								{{/ if }}
+							</td>
+							<td>
+								<span class='text-primary'>{{ this.posterIp }}</span>
+							</td>
+							<td>{{{ this.subject }}}</td>
+							<td>{{{ this.comment }}}</td>
+							<td>{{ this.createdAt }}</td>
+							<td>
+								<a href='{{ this.postLink }}' target='_blank'>
+									Go
+									<span class='icon-up-right-from-square text-secondary'></span>
+								</a>
+							</td>
+							<td>
+								<a
+									href='/megami/moderation/ban?ip={{ this.posterIp }}&postId={{ this.id }}'
+									class='btn btn-outline-danger'
+									target='_blank'
+								>
+									Ban
+								</a>
+							</td>
+						</tr>
+					{{/each}}
+					</tbody>
+				</table>
+			</form>
+
+			<button type='submit' class='btn btn-danger mt-3' form='moderationDeletePostsForm'>
+				Delete selected posts
+			</button>
+
+		</div>
+	</div>
+</div>
+
+<script src='/js/megami-dashboard.js'></script>
+
+{{> eof}}

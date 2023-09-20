@@ -1,0 +1,134 @@
+{{> head}}
+
+{{> admin_nav }}
+
+<div class='container-fluid mt-3'>
+
+	{{> admin_offcanvas }}
+
+	<div class='row mt-3 mt-lg-0'>
+		<div class='col-lg-3 d-lg-block d-none'>
+			{{> admin_menu}}
+		</div>
+		<div class='col'>
+			<h3>Weclome!</h3>
+
+			<p>Welcome, <a href='/megami/profile'>{{ session.email }}</a></p>
+			<p>Currently, there are <strong>{{ totalPosts }}</strong> posts on <strong>{{ totalBoards }}</strong> boards</p>
+
+			{{# if (eq session.role "ADMIN") }}
+
+			<p><a href='/megami/disk'>Disk space used</a> is <strong>{{ diskSpaceUsed }}</strong></p>
+
+			<h3>Technical Info</h3>
+			<p>Uptime (seconds) - <strong>{{ uptime }}</strong></p>
+			<p>CPU:</p>
+			<ul>
+				<li>model - <strong>{{ cpu.model }}</strong></li>
+				<li>speed - <strong>{{ cpu.speed }}</strong></li>
+				<li>user usage time (microseconds) - <strong>{{ cpu.times.user }}</strong></li>
+				<li>system usage time (microseconds) - <strong>{{ cpu.times.sys }}</strong></li>
+			</ul>
+
+			<p>Memory usage:</p>
+			<ul>
+				<li>Total - <strong>{{ memory.total }}</strong></li>
+				<li>Free - <strong>{{ memory.inUsage }}</strong></li>
+				<li>In use - <strong>{{ memory.free }}</strong></li>
+			</ul>
+
+			<p>Debug port: <strong>9229</strong> (see <a
+				href='https://nodejs.org/en/docs/guides/debugging-getting-started'
+				target='_blank'
+			>Node.js Debugging Guide</a>)</p>
+			<p>App port: <strong>{{ port }}</strong></p>
+
+			<p><abbr title='Docker container ID'>Host name</abbr>: <strong>{{ host }}</strong></p>
+
+			<h3>Node.js</h3>
+			<p><a
+				href='https://nodejs.org/'
+				target='_blank'
+			>Node.js</a> version - <strong>v{{ processVersions.node }}</strong></p>
+
+			<h5>Node details</h5>
+			<ul>
+				{{# each processVersions }}
+					<li>{{@key}}: <strong>{{ this }}</strong></li>
+				{{/ each }}
+			</ul>
+
+			<h3>PostgreSQL</h3>
+			<p><a
+				href='https://www.postgresql.org/'
+				target='_blank'
+			>PostgreSQL</a> version - <strong>{{ postgresVersion }}</strong></p>
+
+			<p><a
+				href='https://www.prisma.io/'
+				target='_blank'
+			>Prisma</a> version - <strong>{{ prismaVersion }}</strong></p>
+
+			<p>
+				<a href='https://www.npmjs.com/package/@prisma/client' target='_blank'>
+					@prisma/client
+				</a> version - <strong>{{ prismaClientVersion }}</strong>
+			</p>
+
+			<h3>Dependencies</h3>
+
+			<table class="table table-borderless">
+				{{# each dependencies}}
+					<tr>
+						{{# each this}}
+							<td>
+								<a
+									href='https://www.npmjs.com/package/{{ this.package }}'
+									target='_blank'
+								>
+									{{ this.package }}
+								</a>: {{ this.version }}
+							</td>
+						{{/each}}
+					</tr>
+				{{/each}}
+			</table>
+
+			<h3>Dev-dependencies</h3>
+
+			<table class="table table-borderless">
+				{{# each devDependencies}}
+					<tr>
+						{{# each this}}
+							<td>
+								<a
+									href='https://www.npmjs.com/package/{{ this.package }}'
+									target='_blank'
+								>
+									{{ this.package }}
+								</a>: {{ this.version }}
+							</td>
+						{{/each}}
+					</tr>
+				{{/each}}
+			</table>
+
+			<h3>Attributions</h3>
+
+			<ul>
+				<li>Icons by <a
+					href='https://fontawesome.com/'
+					target='_blank'
+				>Font Awesome</a> - <a
+					href='https://fontawesome.com/license/free'
+					target='_blank'
+				>CC BY 4.0 License</a></li>
+			</ul>
+			{{/ if}}
+		</div>
+	</div>
+</div>
+
+<script src='/js/megami-dashboard.js'></script>
+
+{{> eof}}

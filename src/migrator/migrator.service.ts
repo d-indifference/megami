@@ -1,9 +1,10 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Prisma } from '@prisma/client';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 import { exec } from 'child_process';
+import { LOG } from '../toolkit';
 
 /**
  * Prisma migrations runner
@@ -19,15 +20,12 @@ export class MigratorService {
 	 * Run Prisma migrations exactly
 	 */
 	public async runPrismaMigrations(): Promise<void> {
-		Logger.log('Checking database migrations...', this.constructor.name);
+		LOG.log(this, 'Checking database migrations...');
 
 		const needToFirstTimeMigrate = await this.isNeedToFirstTimeMigrate();
 
 		if (needToFirstTimeMigrate) {
-			Logger.log(
-				'Database migrations will be applied at first time',
-				this.constructor.name
-			);
+			LOG.log(this, 'Database migrations will be applied at first time');
 
 			await this.promisifyProcess('npm run prisma:migrate');
 		} else {
@@ -37,11 +35,11 @@ export class MigratorService {
 				await this.getAppliedMigrationsCount();
 
 			if (availableMigrationsCount > appliedMigrationsCount) {
-				Logger.log('News database migrations will be applied', 'main');
+				LOG.log(this, 'New database migrations will be applied');
 
 				await this.promisifyProcess('npm run prisma:migrate');
 			} else {
-				Logger.log('All database migrations are up to date', 'main');
+				LOG.log(this, 'All database migrations are up to date');
 			}
 		}
 	}
@@ -86,6 +84,7 @@ export class MigratorService {
 	 * @param command Shell command
 	 */
 	private promisifyProcessNoOutput(command: string): Promise<string> {
+		LOG.log(this, 'Run process...', { command });
 		return new Promise((resolve, reject) => {
 			exec(command, (error, stdout, stderr) => {
 				if (error) {
@@ -103,6 +102,7 @@ export class MigratorService {
 	 * @param command Shell command
 	 */
 	private promisifyProcess(command: string): Promise<void> {
+		LOG.log(this, 'Run process...', { command });
 		return new Promise((resolve, reject) => {
 			this.promisifyProcessNoOutput(command)
 				.then(result => {
