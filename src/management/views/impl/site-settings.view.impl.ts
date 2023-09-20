@@ -3,9 +3,9 @@ import { SessionDto } from '../../dto/session/session.dto';
 import { SiteSettingsPage } from '../../types/site-settings-page.type';
 import { Inject } from '@nestjs/common';
 import { SiteSettingsService } from '../../../site-settings/services/site-settings.service';
-import { SiteSettings } from '../../../site-settings/types/site-settings.type';
 import e from 'express';
 import { LOG } from '../../../toolkit';
+import { SiteSettingsDto } from '../../dto/site-settings/site-settings.dto';
 
 /**
  * Site settings views
@@ -37,7 +37,7 @@ export class SiteSettingsViewImpl implements SiteSettingsView {
 	 * @param res Express.js response
 	 */
 	public async saveSettings(
-		dto: SiteSettings,
+		dto: SiteSettingsDto,
 		res: e.Response
 	): Promise<void> {
 		LOG.log(this, 'update site settings', dto);

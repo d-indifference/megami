@@ -41,8 +41,95 @@
 	}
 }
 
+.custom-unkfunc {
+	color: green;
+}
+
+a {
+	.custom-unkfunc {
+		color: #0d6efd;
+	}
+}
+
 .custom-logo-img {
 	width: 300px;
+}
+
+.custom-code-aa {
+	font-family: 'Mona', sans-serif;
+	display: block;
+	font-size: 12pt;
+	line-height: 1.1;
+	overflow: auto;
+}
+
+.custom-spoiler {
+	background-color: #000;
+	color: #000;
+
+	&:hover {
+		color: #fff;
+	}
+}
+
+@keyframes rainbold {
+	0% {
+		color: red;
+		text-shadow: -1px 0 orange,-2px 0 yellow,-3px 0 green,-4px 0 blue,-5px 0 indigo,-6px 0 violet
+	}
+
+	14% {
+		color: orange;
+		text-shadow: -1px 0 yellow,-2px 0 green,-3px 0 blue,-4px 0 indigo,-5px 0 violet,-6px 0 red
+	}
+
+	28% {
+		color: yellow;
+		text-shadow: -1px 0 green,-2px 0 blue,-3px 0 indigo,-4px 0 violet,-5px 0 red,-6px 0 orange
+	}
+
+	43% {
+		color: green;
+		text-shadow: -1px 0 blue,-2px 0 indigo,-3px 0 violet,-4px 0 red,-5px 0 orange,-6px 0 yellow
+	}
+
+	57% {
+		color: blue;
+		text-shadow: -1px 0 indigo,-2px 0 violet,-3px 0 red,-4px 0 orange,-5px 0 yellow,-6px 0 green
+	}
+
+	71% {
+		color: indigo;
+		text-shadow: -1px 0 violet,-2px 0 red,-3px 0 orange,-4px 0 yellow,-5px 0 green,-6px 0 blue
+	}
+
+	85% {
+		color: violet;
+		text-shadow: -1px 0 red,-2px 0 orange,-3px 0 yellow,-4px 0 green,-5px 0 blue,-6px 0 indigo
+	}
+
+	100% {
+		color: red;
+		text-shadow: -1px 0 orange,-2px 0 yellow,-3px 0 green,-4px 0 blue,-5px 0 indigo,-6px 0 violet
+	}
+}
+
+.cow {
+	animation: rainbold 1s linear infinite;
+	color: red;
+	font-size: 1.5em;
+	letter-spacing: .33em;
+	margin-left: 6px;
+	text-shadow: -1px 0 orange,-2px 0 yellow,-3px 0 green,-4px 0 blue,-5px 0 indigo,-6px 0 violet
+}
+
+.custom-cow {
+	animation: rainbold 1s linear infinite;
+	color: red;
+	font-size: 1.5em;
+	letter-spacing: .33em;
+	margin-left: 6px;
+	text-shadow: -1px 0 orange, -2px 0 yellow, -3px 0 green, -4px 0 blue, -5px 0 indigo, -6px 0 violet;
 }
 
 @media (max-width: 992px) {

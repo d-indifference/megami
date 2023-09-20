@@ -8,7 +8,9 @@ import {
 	Req,
 	Res,
 	Session,
-	UseGuards
+	UseGuards,
+	UsePipes,
+	ValidationPipe
 } from '@nestjs/common';
 import { SignInPage } from '../types/sign-in-page.type';
 import { SignInPageView } from '../views/sign-in-page.view.interface';
@@ -51,6 +53,7 @@ export class ManagementAuthController {
 	 */
 	@Post('sign-in')
 	@FormDataRequest()
+	@UsePipes(new ValidationPipe({ transform: true }))
 	public async signIn(
 		@Body() body: SignInDto,
 		@Session() session: SessionDto,

@@ -3,6 +3,7 @@ import { Board } from '@prisma/client';
 import { BoardDto } from '../../dto/board.dto';
 import { Injectable } from '@nestjs/common';
 import { BoardItemDto } from 'src/board/dto/board.item.dto';
+import { BoardUpdateDto } from '../../dto/board.update.dto';
 
 /**
  * Mapper for Board entity
@@ -49,5 +50,15 @@ export class BoardMapperImpl implements BoardMapper {
 	 */
 	public toExistingEntity(dto: BoardDto, entity: Board): Board {
 		return { ...entity, ...dto };
+	}
+
+	/**
+	 * Map update DTO to entity
+	 * @param dto Board DTO
+	 */
+	public update(dto: BoardUpdateDto): Board {
+		return {
+			name: dto.name
+		} as Board;
 	}
 }

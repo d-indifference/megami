@@ -23,6 +23,8 @@ export interface BanView {
 	): Promise<void>;
 
 	removeBan(id: string, res: Response): Promise<void>;
+
+	removePost(id: string, res: Response): Promise<void>;
 }
 
 export const BanView = Symbol('BanView');

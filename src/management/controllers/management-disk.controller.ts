@@ -8,7 +8,9 @@ import {
 	Render,
 	Res,
 	Session,
-	UseGuards
+	UseGuards,
+	UsePipes,
+	ValidationPipe
 } from '@nestjs/common';
 import { DiskListPageView } from '../views/disk-list-page.view.interface';
 import { SessionGuard } from '../guards/session.guard';
@@ -59,6 +61,7 @@ export class ManagementDiskController {
 	 */
 	@Post('disk/:slug/delete')
 	@UseGuards(SessionGuard)
+	@UsePipes(new ValidationPipe({ transform: true }))
 	public async deleteFilesFromDisk(
 		@Param('slug') slug: string,
 		@Body() dto: FilesDeleteDto,

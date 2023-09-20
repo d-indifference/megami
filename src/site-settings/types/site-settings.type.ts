@@ -23,6 +23,11 @@ export type SiteSettings = {
 	mainPageLogoAddress: string;
 
 	/**
+	 * Board bottom links
+	 */
+	boardBottomLinks: string;
+
+	/**
 	 * Thread creation delay in seconds
 	 */
 	threadCreationDelay: number;
@@ -36,4 +41,14 @@ export type SiteSettings = {
 	 * Bump limit (min. 3)
 	 */
 	bumpLimit: number;
+
+	/**
+	 * FAQ page
+	 */
+	faqHtml: string;
+
+	/**
+	 * Rules page
+	 */
+	rulesHtml: string;
 };

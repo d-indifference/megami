@@ -45,7 +45,9 @@ export class ThreadsViewImpl implements ThreadsView {
 			siteLogo: await this.siteSettingsServices.getTitle(),
 			board,
 			threads,
-			paginatorTemplate: makePaginatorTemplate(threads)
+			paginatorTemplate: makePaginatorTemplate(threads),
+			boardBottomLinks:
+				await this.siteSettingsServices.getBoardBottomLinks()
 		} as BoardPage;
 	}
 }

@@ -20,7 +20,6 @@ follow it through to the final release :).
 * Tread catalogs and gallery.
 
 ### Planned features in next update
-* Huge text collapsing.
 * Rich markdown
 * Hidden boards
 

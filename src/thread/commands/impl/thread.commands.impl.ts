@@ -3,7 +3,11 @@ import { ThreadCreateDto } from '../../dto/thread.create.dto';
 import { CreationResultDto } from '../../../toolkit/creation-result.dto';
 import { saveFileToPermanentStorage } from '../../../toolkit/save-file-to-permanent-storage.function';
 import { ConfigService } from '@nestjs/config';
-import { Inject, MethodNotAllowedException } from '@nestjs/common';
+import {
+	BadRequestException,
+	Inject,
+	MethodNotAllowedException
+} from '@nestjs/common';
 import { BoardRepo } from '../../../board/repo/board.repo.interface';
 import { ThreadMapper } from '../../mappers/thread.mapper.interface';
 import { ThreadRepo } from '../../repo/thread.repo.interface';
@@ -16,6 +20,7 @@ import { SiteSettingsService } from '../../../site-settings/services/site-settin
 import { LOG } from '../../../toolkit';
 import { DeleteDto } from '../../../toolkit/delete.dto';
 import { BanPolicyService } from '../../../ban/ban-policy.service';
+import { MarkdownService } from '../../services/markdown.service';
 
 /**
  * Commands for threads
@@ -33,7 +38,9 @@ export class ThreadCommandsImpl implements ThreadCommands {
 		@Inject(SiteSettingsService)
 		private readonly siteSettingsService: SiteSettingsService,
 		@Inject(BanPolicyService)
-		private readonly banService: BanPolicyService
+		private readonly banService: BanPolicyService,
+		@Inject(MarkdownService)
+		private readonly markdownService: MarkdownService
 	) {}
 
 	/**
@@ -79,6 +86,17 @@ export class ThreadCommandsImpl implements ThreadCommands {
 		const board = await this.boardRepo.findBySlug(slug);
 
 		const reply = this.threadMapper.create(slug, dto, savedFilePath);
+
+		reply.comment = await this.markdownService.processMarkdown(
+			reply.comment,
+			reply.boardSlug
+		);
+
+		if (reply.comment.length < 3) {
+			throw new BadRequestException(
+				'Please write a normal comment without forbidden markdown'
+			);
+		}
 
 		const parent = await this.threadRepo.findBySlugAndNumber(
 			slug,
@@ -140,6 +158,17 @@ export class ThreadCommandsImpl implements ThreadCommands {
 		);
 
 		const thread = this.threadMapper.create(slug, dto, savedFilePath);
+
+		if (thread.comment.length < 3) {
+			throw new BadRequestException(
+				'Please write a normal comment without forbidden markdown'
+			);
+		}
+
+		thread.comment = await this.markdownService.processMarkdown(
+			thread.comment,
+			thread.boardSlug
+		);
 
 		const board = await this.boardRepo.findBySlug(slug);
 

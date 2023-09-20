@@ -13,6 +13,7 @@ import { ModeratorPostDeletionContextProcessor } from '../../../thread/strategie
 import { BanListPage } from '../../types/ban-list-page.type';
 import { BanQueries } from '../../queries/ban.queries.interface';
 import { DeleteDto } from '../../../toolkit/delete.dto';
+import { ThreadCommands } from '../../../thread/commands/thread.commands.interface';
 
 /**
  * Ban view pages
@@ -30,7 +31,9 @@ export class BanViewImpl implements BanView {
 		@Inject(UserQueries)
 		private readonly userQueries: UserQueries,
 		@Inject(ModeratorPostDeletionContextProcessor)
-		private readonly moderatorPostDeletionContextProcessor: ModeratorPostDeletionContextProcessor
+		private readonly moderatorPostDeletionContextProcessor: ModeratorPostDeletionContextProcessor,
+		@Inject(ThreadCommands)
+		private readonly threadCommands: ThreadCommands
 	) {}
 
 	/**
@@ -125,6 +128,24 @@ export class BanViewImpl implements BanView {
 		await this.banCommands.remove(dto);
 
 		res.redirect('/megami/moderation/bans');
+	}
+
+	/**
+	 * Remove post
+	 * @param id Comment UUID
+	 * @param res Express.js response
+	 */
+	public async removePost(id: string, res: Response): Promise<void> {
+		LOG.log(this, 'remove post', { id });
+
+		const dto = new DeleteDto();
+		dto.ids = [id];
+
+		await this.threadCommands.deleteCommentsByIds(dto);
+
+		LOG.log(this, 'post removed', { id });
+
+		res.redirect('/megami/moderation/recent-posts');
 	}
 
 	/**

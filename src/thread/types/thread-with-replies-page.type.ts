@@ -37,6 +37,11 @@ export type ThreadWithRepliesPage = {
 	openPost: ThreadOpenPostDto;
 
 	/**
+	 * Board bottom links
+	 */
+	boardBottomLinks: string;
+
+	/**
 	 * Thread replies
 	 */
 	replies: ThreadReplyDto[];

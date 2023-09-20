@@ -7,7 +7,9 @@ import {
 	Render,
 	Res,
 	Session,
-	UseGuards
+	UseGuards,
+	UsePipes,
+	ValidationPipe
 } from '@nestjs/common';
 import { RecentPostsView } from '../views/recent-posts.view.interface';
 import { SessionGuard } from '../../management/guards/session.guard';
@@ -43,6 +45,7 @@ export class ModerationRecentPostsController {
 	 */
 	@Post('delete-posts')
 	@UseGuards(SessionGuard)
+	@UsePipes(new ValidationPipe({ transform: true }))
 	public async deletePostsByModerator(
 		@Body() dto: DeleteDto,
 		@Res() res: Response

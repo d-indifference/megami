@@ -7,14 +7,16 @@ import {
 	Render,
 	Res,
 	Session,
-	UseGuards
+	UseGuards,
+	UsePipes,
+	ValidationPipe
 } from '@nestjs/common';
 import { SessionDto } from '../dto/session/session.dto';
 import { SiteSettingsPage } from '../types/site-settings-page.type';
 import { SiteSettingsView } from '../views/site-settings.view.interface';
 import { SessionGuard } from '../guards/session.guard';
-import { SiteSettings } from '../../site-settings/types/site-settings.type';
 import { Response } from 'express';
+import { SiteSettingsDto } from '../dto/site-settings/site-settings.dto';
 
 /**
  * Site settings controller
@@ -43,8 +45,9 @@ export class ManagementSiteSettingsController {
 	 */
 	@Post('settings')
 	@UseGuards(SessionGuard)
+	@UsePipes(new ValidationPipe({ transform: true }))
 	public async saveSettings(
-		@Body() dto: SiteSettings,
+		@Body() dto: SiteSettingsDto,
 		@Res() res: Response
 	): Promise<void> {
 		await this.siteSettingsView.saveSettings(dto, res);

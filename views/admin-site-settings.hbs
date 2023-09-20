@@ -69,6 +69,19 @@
 					>{{ siteSettings.description }}</textarea>
 				</div>
 
+				<div class='mb-3'>
+					<label for="settingsBoardBottomLinks" class="form-label">Board bottom links</label>
+					<textarea
+						name="boardBottomLinks"
+						cols='30'
+						rows='10'
+						class="form-control"
+						id="settingsBoardBottomLinks"
+						required
+						autocomplete='off'
+					>{{ siteSettings.boardBottomLinks }}</textarea>
+				</div>
+
 				<hr>
 
 				<h4>Posting limits</h4>
@@ -113,6 +126,36 @@
 						value='{{ siteSettings.bumpLimit }}'
 						min='3'
 					>
+				</div>
+
+				<hr>
+
+				<h4>Site pages</h4>
+
+				<div class='mb-3'>
+					<label for="settingsFaqHtml" class="form-label">FAQ page</label>
+					<textarea
+						name="faqHtml"
+						cols='30'
+						rows='10'
+						class="form-control"
+						id="settingsFaqHtml"
+						required
+						autocomplete='off'
+					>{{ siteSettings.faqHtml }}</textarea>
+				</div>
+
+				<div class='mb-3'>
+					<label for="settingsRulesHtml" class="form-label">Rules page</label>
+					<textarea
+						name="rulesHtml"
+						cols='30'
+						rows='10'
+						class="form-control"
+						id="settingsRulesHtml"
+						required
+						autocomplete='off'
+					>{{ siteSettings.rulesHtml }}</textarea>
 				</div>
 
 				<button class='btn btn-primary'>Save changes</button>

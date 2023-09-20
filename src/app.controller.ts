@@ -5,6 +5,7 @@ import { IndexPage } from './types/index-page.type';
 import { BoardsView } from './board/views/boards.view.interface';
 import { BoardsList } from './board/types/boards-list.type';
 import { SiteSettingsService } from './site-settings/services/site-settings.service';
+import { InfoPage } from './types/info-page.type';
 
 /**
  * Main Application Controller
@@ -34,6 +35,27 @@ export class AppController {
 				.description,
 			mainLogo: (await this.siteSettingsService.getSiteSettings())
 				.mainPageLogoAddress
+		};
+	}
+
+	@Get('rules')
+	@Render('rules')
+	public async rules(): Promise<InfoPage> {
+		return {
+			siteLogo: await this.siteSettingsService.getTitle(),
+			title: await this.siteSettingsService.buildTitle('Rules'),
+			content: (await this.siteSettingsService.getSiteSettings())
+				.rulesHtml
+		};
+	}
+
+	@Get('faq')
+	@Render('faq')
+	public async faq(): Promise<InfoPage> {
+		return {
+			siteLogo: await this.siteSettingsService.getTitle(),
+			title: await this.siteSettingsService.buildTitle('FAQ'),
+			content: (await this.siteSettingsService.getSiteSettings()).faqHtml
 		};
 	}
 

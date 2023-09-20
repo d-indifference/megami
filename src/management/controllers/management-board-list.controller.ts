@@ -8,7 +8,9 @@ import {
 	Render,
 	Res,
 	Session,
-	UseGuards
+	UseGuards,
+	UsePipes,
+	ValidationPipe
 } from '@nestjs/common';
 import { BoardListPageView } from '../views/board-list-page.view.interface';
 import { SessionDto } from '../dto/session/session.dto';
@@ -17,6 +19,7 @@ import { BoardListPage } from '../types/board-list-page.type';
 import { BoardFormPage } from '../types/board-form-page.type';
 import { BoardDto } from '../../board/dto/board.dto';
 import { Response } from 'express';
+import { BoardUpdateDto } from '../../board/dto/board.update.dto';
 
 /**
  * Board list controller
@@ -68,6 +71,7 @@ export class ManagementBoardListController {
 	 */
 	@Post('boards/edit')
 	@UseGuards(SessionGuard)
+	@UsePipes(new ValidationPipe({ transform: true }))
 	public async createNewBoard(
 		@Body() dto: BoardDto,
 		@Res() res: Response
@@ -80,9 +84,10 @@ export class ManagementBoardListController {
 	 */
 	@Post('boards/edit/:id')
 	@UseGuards(SessionGuard)
+	@UsePipes(new ValidationPipe({ transform: true }))
 	public async updateBoard(
 		@Param('id') id: string,
-		@Body() dto: BoardDto,
+		@Body() dto: BoardUpdateDto,
 		@Res() res: Response
 	): Promise<void> {
 		await this.boardListPageView.updateBoard(id, dto, res);

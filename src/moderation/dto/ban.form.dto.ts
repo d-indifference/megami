@@ -1,3 +1,13 @@
+import {
+	IsEnum,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+	IsUUID,
+	Matches,
+	MaxLength
+} from 'class-validator';
+
 /**
  * Post deletion options
  */
@@ -35,25 +45,39 @@ export class BanFormDto {
 	/**
 	 * IP which should be banned
 	 */
+	@IsString()
+	@IsNotEmpty()
+	@MaxLength(64)
 	ip: string;
 
 	/**
 	 * Post id which became the reason of ban
 	 */
+	@IsString()
+	@IsNotEmpty()
+	@IsUUID()
 	postId: string;
 
 	/**
 	 * Date of end of ban
 	 */
+	@IsString()
+	@IsNotEmpty()
+	@Matches(/^\d{4}-\d{2}-\d{2}/)
 	banTill: string;
 
 	/**
 	 * Ban reason
 	 */
+	@IsOptional()
+	@IsString()
+	@MaxLength(1024)
 	reason: string;
 
 	/**
 	 * Post deletion option
 	 */
+	@IsEnum(DeleteOption)
+	@IsNotEmpty()
 	deleteOption: DeleteOption;
 }

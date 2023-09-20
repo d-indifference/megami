@@ -7,7 +7,9 @@ import {
 	Render,
 	Res,
 	Session,
-	UseGuards
+	UseGuards,
+	UsePipes,
+	ValidationPipe
 } from '@nestjs/common';
 import { SessionDto } from '../../management/dto/session/session.dto';
 import { SessionGuard } from '../../management/guards/session.guard';
@@ -41,6 +43,7 @@ export class ModerationIpFilterController {
 	 */
 	@Post('ip-filter')
 	@UseGuards(SessionGuard)
+	@UsePipes(new ValidationPipe({ transform: true }))
 	public async saveChangedLists(
 		@Body() dto: IpListUpdateDto,
 		@Res() res: Response

@@ -7,7 +7,9 @@ import {
 	Render,
 	Res,
 	Session,
-	UseGuards
+	UseGuards,
+	UsePipes,
+	ValidationPipe
 } from '@nestjs/common';
 import { SessionGuard } from '../guards/session.guard';
 import { SessionDto } from '../dto/session/session.dto';
@@ -41,6 +43,7 @@ export class ManagementProfileController {
 	 */
 	@Post('profile/update')
 	@UseGuards(SessionGuard)
+	@UsePipes(new ValidationPipe({ transform: true }))
 	public async updateUser(
 		@Session() session: SessionDto,
 		@Body() dto: UserChangePasswordDto,

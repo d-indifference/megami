@@ -8,7 +8,9 @@ import {
 	Render,
 	Res,
 	Session,
-	UseGuards
+	UseGuards,
+	UsePipes,
+	ValidationPipe
 } from '@nestjs/common';
 import { AdministrationPageView } from '../views/administration-page.view.interface';
 import { SessionGuard } from '../guards/session.guard';
@@ -17,6 +19,7 @@ import { AdministrationPage } from '../types/administration-page.type';
 import { AdministrationForm } from '../types/administration-form.type';
 import { UserCreateDto } from '../dto/user/user.create.dto';
 import { Response } from 'express';
+import { UserUpdateRoleDto } from '../dto/user/user-update-role.dto';
 
 /**
  * Administration staff controller
@@ -70,6 +73,7 @@ export class ManagementStaffController {
 	 */
 	@Post('staff/edit')
 	@UseGuards(SessionGuard)
+	@UsePipes(new ValidationPipe({ transform: true }))
 	public async createStaffMember(
 		@Body() dto: UserCreateDto,
 		@Res() res: Response
@@ -82,9 +86,10 @@ export class ManagementStaffController {
 	 */
 	@Post('staff/edit/:id')
 	@UseGuards(SessionGuard)
+	@UsePipes(new ValidationPipe({ transform: true }))
 	public async editStaffMember(
 		@Param('id') id: string,
-		@Body() dto: UserCreateDto,
+		@Body() dto: UserUpdateRoleDto,
 		@Res() res: Response
 	): Promise<void> {
 		await this.administrationPageView.editStaffMember(id, dto, res);

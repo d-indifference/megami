@@ -68,5 +68,65 @@ const normalizeDateTimeInThread = () => {
 	}
 };
 
+const truncateHtmlInCollapsable = () => {
+	const collapsableBlocks = document.querySelectorAll('.custom-collapsable');
+
+	for (const block of collapsableBlocks) {
+		block.innerHTML = truncateHtml(block.innerHTML, 64);
+	}
+};
+
+const truncateHtml = (inputHtml, maxLength) => {
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(inputHtml, 'text/html');
+	const root = doc.body;
+	let currentLength = 0;
+
+	const traverse = node => {
+		if (node.nodeType === Node.TEXT_NODE) {
+			const text = node.textContent;
+			const remainingChars = maxLength - currentLength;
+
+			if (text.length <= remainingChars) {
+				currentLength += text.length;
+			} else {
+				node.textContent = text.slice(0, remainingChars);
+				currentLength = maxLength;
+			}
+		} else if (node.nodeType === Node.ELEMENT_NODE) {
+			for (const child of node.childNodes) {
+				traverse(child);
+			}
+		}
+	};
+
+	traverse(root);
+
+	if (currentLength >= maxLength) {
+		const ellipsisNode = doc.createTextNode('...');
+		root.appendChild(ellipsisNode);
+	}
+
+	return root.innerHTML;
+};
+
+const processThreadReplyLink = () => {
+	const replyInThreadModal = document.getElementById('replyInThreadModal');
+
+	if (replyInThreadModal) {
+		replyInThreadModal.addEventListener('show.bs.modal', event => {
+			const textArea = document.getElementById('newReplyComment');
+			textArea.value = '';
+
+			const trigger = event.relatedTarget;
+			const postNumber = trigger.dataset["postNumber"];
+
+			textArea.value = `>>${postNumber}\r\n`;
+		});
+	}
+};
+
 passwordSettingHandler();
 normalizeDateTimeInThread();
+truncateHtmlInCollapsable();
+processThreadReplyLink();

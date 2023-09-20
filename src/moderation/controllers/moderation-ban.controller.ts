@@ -9,7 +9,9 @@ import {
 	Render,
 	Res,
 	Session,
-	UseGuards
+	UseGuards,
+	UsePipes,
+	ValidationPipe
 } from '@nestjs/common';
 import { SessionGuard } from '../../management/guards/session.guard';
 import { SessionDto } from '../../management/dto/session/session.dto';
@@ -60,12 +62,25 @@ export class ModerationBanController {
 	 */
 	@Post('ban')
 	@UseGuards(SessionGuard)
+	@UsePipes(new ValidationPipe({ transform: true }))
 	public async createBan(
 		@Body() dto: BanFormDto,
 		@Session() session: SessionDto,
 		@Res() res: Response
 	): Promise<void> {
 		await this.banView.createBan(dto, session, res);
+	}
+
+	/**
+	 * Remove only post
+	 */
+	@Get('ban/delete-post/:id')
+	@UseGuards(SessionGuard)
+	public async deletePost(
+		@Param('id') id: string,
+		@Res() res: Response
+	): Promise<void> {
+		await this.banView.removePost(id, res);
 	}
 
 	/**

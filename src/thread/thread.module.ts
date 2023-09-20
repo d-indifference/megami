@@ -20,6 +20,7 @@ import { ThreadRepliesViewImpl } from './views/impl/thread-replies.view.impl';
 import { SiteSettingsModule } from '../site-settings/site-settings.module';
 import { ModeratorPostDeletionContextProcessor } from './strategies';
 import { BanModule } from '../ban/ban.module';
+import { MarkdownService } from './services/markdown.service';
 
 /**
  * Module for threads and replies
@@ -39,6 +40,7 @@ import { BanModule } from '../ban/ban.module';
 	providers: [
 		PrismaService,
 		ModeratorPostDeletionContextProcessor,
+		MarkdownService,
 		{
 			provide: NewThreadView,
 			useClass: NewThreadViewImpl

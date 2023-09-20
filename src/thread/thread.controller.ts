@@ -7,7 +7,9 @@ import {
 	Post,
 	Render,
 	Res,
-	Session
+	Session,
+	UsePipes,
+	ValidationPipe
 } from '@nestjs/common';
 import { ThreadsView } from '../board/views/threads.view.interface';
 import { BoardPage } from '../board/types/board-page.type';
@@ -52,6 +54,7 @@ export class ThreadController {
 	 * Post thread creation
 	 */
 	@Post('new-thread')
+	@UsePipes(new ValidationPipe({ transform: true }))
 	@FormDataRequest()
 	public async createNewThread(
 		@Param('board') slug: string,
@@ -83,6 +86,7 @@ export class ThreadController {
 	 * Create thread reply
 	 */
 	@Post('res/:threadNumber')
+	@UsePipes(new ValidationPipe({ transform: true }))
 	@FormDataRequest()
 	public async replyToThread(
 		@Param('board') slug: string,
@@ -104,6 +108,7 @@ export class ThreadController {
 	 * Delete comments
 	 */
 	@Post('res/:threadNumber/delete')
+	@UsePipes(new ValidationPipe({ transform: true }))
 	@FormDataRequest()
 	public async deleteComments(
 		@Param('board') slug: string,

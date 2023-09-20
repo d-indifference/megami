@@ -7,7 +7,9 @@ import {
 	Render,
 	Res,
 	Session,
-	UseGuards
+	UseGuards,
+	UsePipes,
+	ValidationPipe
 } from '@nestjs/common';
 import { SessionGuard } from '../../management/guards/session.guard';
 import { SessionDto } from '../../management/dto/session/session.dto';
@@ -43,6 +45,7 @@ export class ModerationRecentUploadsController {
 	 */
 	@Post('delete-uploads')
 	@UseGuards(SessionGuard)
+	@UsePipes(new ValidationPipe({ transform: true }))
 	public async deleteUploads(
 		@Body() dto: DeleteDto,
 		@Res() res: Response

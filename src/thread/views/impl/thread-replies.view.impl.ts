@@ -117,7 +117,9 @@ export class ThreadRepliesViewImpl implements ThreadRepliesView {
 			postersCount:
 				await this.threadQueries.getUniquePostersCountInThread(
 					openingPost.id
-				)
+				),
+			boardBottomLinks:
+				await this.siteSettingsService.getBoardBottomLinks()
 		} as unknown as ThreadWithRepliesPage;
 	}
 

@@ -25,4 +25,9 @@ export type BoardPage = {
 	 * Pageable list with threads
 	 */
 	threads: Page<ThreadItemDto>;
+
+	/**
+	 * Board bottom links
+	 */
+	boardBottomLinks: string;
 };

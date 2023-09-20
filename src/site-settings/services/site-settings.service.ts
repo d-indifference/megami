@@ -6,6 +6,8 @@ import { SiteSettings } from '../types/site-settings.type';
 import { ConfigService } from '@nestjs/config';
 import * as process from 'process';
 import { LOG } from '../../toolkit';
+import { SiteSettingsDto } from '../../management/dto/site-settings/site-settings.dto';
+import { makeInitialSettings } from '../toolkit/make-initial-settings.function';
 
 /**
  * Site settings service
@@ -51,16 +53,7 @@ export class SiteSettingsService {
 		);
 
 		if (!fsSync.existsSync(pathToSettings)) {
-			const defaultSettings: SiteSettings = {
-				title: 'Megami Image Board',
-				slogan: 'Modern image board engine',
-				description: `Some description for this site. 
-It fully supports HTML5 markdown + <a href="https://getbootstrap.com/">Boostrap</a>`,
-				threadCreationDelay: 30,
-				threadReplyDelay: 5,
-				mainPageLogoAddress: '/img/logo-512.png',
-				bumpLimit: 100
-			};
+			const defaultSettings: SiteSettings = makeInitialSettings();
 
 			await fs.writeFile(
 				pathToSettings,
@@ -79,7 +72,7 @@ It fully supports HTML5 markdown + <a href="https://getbootstrap.com/">Boostrap<
 	 * @param newSettings New settings data
 	 */
 	public async updateSiteSettings(
-		newSettings: Partial<SiteSettings>
+		newSettings: SiteSettingsDto
 	): Promise<void> {
 		LOG.log(this, 'update settings file', newSettings);
 
@@ -133,5 +126,22 @@ It fully supports HTML5 markdown + <a href="https://getbootstrap.com/">Boostrap<
 		const settings = await this.getSiteSettings();
 
 		return settings.title;
+	}
+
+	/**
+	 * Get board bottom links
+	 */
+	public async getBoardBottomLinks(): Promise<string> {
+		const settings = await this.getSiteSettings();
+
+		return settings.boardBottomLinks;
+	}
+
+	/**
+	 * Map site settings DTO to type
+	 * @param dto Site settings DTO
+	 */
+	private mapDtoToType(dto: SiteSettingsDto): SiteSettings {
+		return { ...dto };
 	}
 }

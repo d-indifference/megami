@@ -6,11 +6,13 @@ import { BoardRepo } from '../../repo/board.repo.interface';
 import { Inject, MethodNotAllowedException } from '@nestjs/common';
 import { BoardMapper } from '../../mappers/board.mapper.interface';
 import * as fs from 'fs/promises';
+import * as fsSync from 'fs';
 import * as path from 'path';
 import { Board } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import * as process from 'process';
 import { LOG } from '../../../toolkit';
+import { BoardUpdateDto } from '../../dto/board.update.dto';
 
 /**
  * Commands for Board entity
@@ -71,12 +73,12 @@ export class BoardCommandsImpl implements BoardCommands {
 	 * @param id Board ID
 	 */
 	public async update(
-		dto: BoardDto,
+		dto: BoardUpdateDto,
 		id: string
 	): Promise<CreationResultDto<string>> {
 		LOG.log(this, `update board, id: ${id}`, dto);
 
-		const board = this.boardMapper.toEntity(dto);
+		const board = this.boardMapper.update(dto);
 
 		const newBoard = await this.boardRepo.update(board, id);
 
@@ -134,9 +136,11 @@ export class BoardCommandsImpl implements BoardCommands {
 				LOG.log(this, `file removed: ${removingFilePath}...`);
 			}
 
-			await fs.rmdir(filesDirectory);
+			if (fsSync.existsSync(filesDirectory)) {
+				await fs.rmdir(filesDirectory);
 
-			LOG.log(this, `directory removed: ${filesDirectory}`);
+				LOG.log(this, `directory removed: ${filesDirectory}`);
+			}
 		}
 	}
 }

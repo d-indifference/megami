@@ -3,6 +3,7 @@ import { SessionDto } from '../dto/session/session.dto';
 import { BoardFormPage } from '../types/board-form-page.type';
 import { BoardDto } from '../../board/dto/board.dto';
 import { Response } from 'express';
+import { BoardUpdateDto } from '../../board/dto/board.update.dto';
 
 /**
  * Board list view
@@ -16,7 +17,7 @@ export interface BoardListPageView {
 
 	createNewBoard(dto: BoardDto, res: Response): Promise<void>;
 
-	updateBoard(id: string, dto: BoardDto, res: Response): Promise<void>;
+	updateBoard(id: string, dto: BoardUpdateDto, res: Response): Promise<void>;
 
 	deleteBoard(id: string, res: Response): Promise<void>;
 }

@@ -9,6 +9,7 @@ import { ThreadReplyDto } from 'src/thread/dto/thread-reply.dto';
 import { ThreadModerationDto } from '../../dto/thread-moderation.dto';
 import { DateTime } from 'luxon';
 import { ThreadFileModerationDto } from '../../dto/thread-file-moderation.dto';
+import { clearSanitizeHtml } from '../../../toolkit/clear-sanitize-html.function';
 
 /**
  * Mapper for Thread entity
@@ -72,11 +73,11 @@ export class ThreadMapperImpl implements ThreadMapper {
 		return {
 			posterIp: dto.posterIp,
 			boardSlug: slug,
-			email: dto.email,
-			name: dto.name,
-			subject: dto.subject,
-			comment: dto.comment,
-			password: dto.password,
+			email: clearSanitizeHtml(dto.email),
+			name: clearSanitizeHtml(dto.name),
+			subject: clearSanitizeHtml(dto.subject),
+			comment: clearSanitizeHtml(dto.comment),
+			password: clearSanitizeHtml(dto.password),
 			file
 		} as Comment;
 	}
